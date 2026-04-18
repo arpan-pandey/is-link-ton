@@ -1,0 +1,92 @@
+@charset "UTF-8";
+
+/* IMPORTS */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Serif+Display:ital@0;1&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+@import url('./components/sidebar.css');
+
+@import url('./pages/student-dashboard.css');
+@import url('./pages/admin-dashboard.css');
+
+/* GLOBAL STYLES */
+
+:root{
+	font-family: "EB Garamond", "serif";
+	letter-spacing: 0.41px;
+}
+
+body{
+	margin: 0;
+	display: flex;
+	flex-direction: row;
+}
+
+main{
+	flex: 1;
+	background: #FAF8F5;
+	padding: 2rem 2.5rem;
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
+header{
+	display: flex;
+	flex-direction: column;
+}
+
+#page-title{
+	margin: 0.35rem 0 0.25rem 0;
+}
+
+#welcome-text{
+	font-size: 19px;
+}
+
+.content-card{
+	background: white;
+	border: 1.2px solid #dfdfdf;
+  	border-radius: 12px;
+  	box-shadow: 0 0 2px rgba(0, 0, 0, 0.09);
+  	padding: 1rem 1.5rem;
+  	font-size: 14px;
+	font-weight: 200;
+	display: flex;
+	flex-direction: column;
+}
+
+.announcement-container{
+	display: flex;
+	align-items: center;
+	font-family: "Nunito", sans;
+	padding: 1.2rem 0;
+}
+
+.announcement-info{
+	flex:1;
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+}
+
+.announcement-title {
+	font-weight: 600;
+}
+
+.announcement-date{
+	font-size: 13px;
+	font-weight: 400;	
+	color: #A4A199;
+}
+
+.container-tag{
+	font-size: 12px;
+	padding: 0.5rem 1rem;
+	border-radius: 30px;
+	background-color: #F4F1EE;
+	font-weight: 800;
+	font-family: "Nunito", sans;
+}
+
+
