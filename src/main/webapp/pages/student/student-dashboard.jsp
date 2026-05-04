@@ -1,3 +1,14 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<c:set var="fullName" value="${user.name}" />
+
+<%-- cleaning name --%>
+<c:set var="cleanName" value="${fn:trim(fn:replace(fullName, '  ', ' '))}" />
+
+<%-- getting firstname --%>
+<c:set var="firstName" value="${fn:split(cleanName, ' ')[0]}" />
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -44,8 +55,9 @@
 		<main>
 			<header>
 				<h1 id="page-title">Dashboard</h1>
-				<span id="welcome-text">Welcome back, Jenish.</span>
+				<span id="welcome-text">Welcome back, ${firstName}!</span>
 			</header>
+			<!-- 
 			<section class="content-card">
 				<h2>Announcements</h2>
 				<div class="announcement-container">
@@ -96,6 +108,7 @@
 					</div>
 				</div>
 			</section>
+			 -->
 		</main>
 	</body>
 </html>
