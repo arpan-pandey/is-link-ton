@@ -1,0 +1,138 @@
+.register-container {
+    background: #F8F9FA;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.register-title h1 {
+    text-align: center;
+    color: #162839;
+    margin-bottom: 5px;
+    font-size: 2.2rem;   
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.register-box {
+    background: white;
+    padding: 40px 30px;
+    border: 2px solid #C4C6CD;
+    border-radius: 2px;
+    width: 100%;
+    max-width: 480px;
+}
+
+#registerForm{
+	display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.form-group input[type="text"], .form-group input[type="email"], .form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.radio-group {
+    display: flex;
+    gap: 25px;
+    padding: 8px 0;
+}
+
+.radio-group label {
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #fafafa;
+}
+
+.upload-area:hover {
+    border-color: #0066cc;
+    background: #f0f7ff;
+}
+
+.upload-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.upload-content small {
+    color: #777;
+}
+
+.register-btn {
+    width: 100%;
+    padding: 14px;
+    background: #1a1a1a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s;
+}
+
+.register-btn:hover {
+    background: #0066cc;
+}
+
+.signin-link {
+    text-align: center;
+    margin-top: 20px;
+    color: #555;
+}
+
+.signin-link a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.signin-link a:hover {
+    text-decoration: underline;
+}
