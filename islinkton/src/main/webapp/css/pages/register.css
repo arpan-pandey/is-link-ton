@@ -7,11 +7,10 @@
     padding: 20px;
 }
 
-.register-title h1 {
+.register-title {
     text-align: center;
     color: #162839;
-    margin-bottom: 5px;
-    font-size: 2.2rem;   
+    font-size: 2rem;   
 }
 
 .subtitle {
@@ -66,6 +65,7 @@
     width: 100%;
     padding: 12px 14px;
     border: 1px solid #ddd;
+    background: #fafafa;
     border-radius: 5px;
     font-size: 1rem;
     transition: border 0.3s;
@@ -90,7 +90,7 @@
 .upload-area {
     border: 2px dashed #ccc;
     border-radius: 8px;
-    padding: 30px 20px;
+    padding: 10px 20px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s;
@@ -105,7 +105,6 @@
 .upload-icon {
     font-size: 2.5rem;
     display: block;
-    margin-bottom: 10px;
 }
 
 .upload-content small {
@@ -115,10 +114,10 @@
 .register-btn {
     width: 100%;
     padding: 14px;
-    background: #1a1a1a;
+    background: #2c3e50;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 2px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
@@ -127,7 +126,7 @@
 }
 
 .register-btn:hover {
-    background: #0066cc;
+    background: #1d252e;
 }
 
 .signin-link {
@@ -137,7 +136,8 @@
 }
 
 .signin-link a {
-    color: #0066cc;
+    color: #2c3e50;
+    font-weight: bold;
     text-decoration: none;
 }
 

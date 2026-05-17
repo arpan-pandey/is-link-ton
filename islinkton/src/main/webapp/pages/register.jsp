@@ -62,7 +62,7 @@
                     <div class="upload-area" id="uploadArea">
                         <input type="file" id="profileImage" name="profileImage" accept="image/png, image/jpeg" style="display:none;">
                         <div class="upload-content">
-                            <span class="upload-icon">📁</span>
+                            <span class="upload-icon">+</span>
                             <p>Upload a file or drag and drop</p>
                             <small>PNG, JPG up to 5MB</small>
                         </div>
@@ -73,7 +73,7 @@
             </form>
 
             <p class="signin-link">
-                Already have an account? <a href="login.jsp">Sign in</a>
+                Already have an account? <a href="${pageContext.request.contextPath}/login">Sign in</a>
             </p>
         </div>
     </div>
