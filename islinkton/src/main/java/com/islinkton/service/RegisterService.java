@@ -1,25 +1,22 @@
 package com.islinkton.service;
 
 import com.islinkton.dao.UserDAO;
-import com.islinkton.model.UserModel;
 import com.islinkton.utils.PasswordUtil;
 
 public class RegisterService {
+	
+	UserDAO dao = new UserDAO();
 
-    public boolean registerUser(UserModel user) {
-
-        try {
-            user.setPassword(PasswordUtil.hashPassword(user.getPassword()));
-
-            UserDAO dao = new UserDAO();
-            dao.insertUser(user);
-
-            return true;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
+    public void registerUser(String fullName, String username, 
+    		String email, String password, String fileName) throws Exception {
+    	
+    	if (dao.getUserByEmail(email) != null) {
+    	    throw new Exception("Email already exists");
+    	}
+    	
+    	// for hashing password
+    	password = PasswordUtil.hashPassword(password); 
+    	
+        dao.insertUser(fullName, username, email, password, fileName);
     }
 }

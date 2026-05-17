@@ -1,36 +1,79 @@
 package com.islinkton.controller;
 
-import com.islinkton.model.UserModel;
 import com.islinkton.service.RegisterService;
-import com.islinkton.utils.PasswordUtil;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @WebServlet("/register")
+@jakarta.servlet.annotation.MultipartConfig
 public class RegisterController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+    	
+    	try {
+    		
+    		String fullName = request.getParameter("fullName");
+            String username = request.getParameter("username");
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            String confirm = request.getParameter("confirmPassword");
+            
+            if (!password.equals(confirm)) {
+                request.setAttribute("error", "Passwords do not match");
+                request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
+                return;
+            }
+    		
+    		Part filePart = request.getPart("profileImage");
 
-        UserModel user = new UserModel();
+            String fileName = null;
 
-        user.setName(request.getParameter("name"));
-        user.setEmail(request.getParameter("email"));
-        user.setPassword(request.getParameter("password"));
-        user.setRole("student");
+            if (filePart != null && filePart.getSize() > 0) {
 
-        RegisterService service = new RegisterService();
+                fileName = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName();
 
-        if (service.registerUser(user)) {
+                String uploadPath = request.getServletContext().getRealPath("") + File.separator + "uploads";
+
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) uploadDir.mkdir();
+
+                try (InputStream input = filePart.getInputStream()) {
+                    Files.copy(input,
+                            Paths.get(uploadPath + File.separator + fileName),
+                            StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+            RegisterService service = new RegisterService();
+            service.registerUser(fullName, username, email, password, fileName);
+            
+            request.getSession().setAttribute("success", "Account created successfully!");
             response.sendRedirect("login");
-        }
+            return;
+    		
+    	}
+    	catch (Exception e) {
+    		request.setAttribute("error", e.getMessage());
+    	    request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
+    	}
+
     }
-    
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        request.getRequestDispatcher("/pages/register.jsp").forward(request, response);
     }
 }

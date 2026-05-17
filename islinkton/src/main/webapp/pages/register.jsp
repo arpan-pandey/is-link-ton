@@ -1,4 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,37 +12,38 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/pages/register.css">
 </head>
 <body>
+     <c:if test="${not empty error}">
+	    <div class="register-error-message" id="errorBox">
+	        ${error}
+	    </div>
+	</c:if>
     <div class="register-container">
    		<h1 class="register-title">Islinkton</h1>
         <p class="subtitle">Create your academic profile</p>
+
+<!-- 		<c:if test="${not empty sessionScope.success}">
+		    <div class="success-message">
+		        ${sessionScope.success}
+		    </div>
+		    <c:remove var="success" scope="session"/>  
+		</c:if> -->
+		
         <div class="register-box">
-            <form action="RegisterServlet" method="post" enctype="multipart/form-data" id="registerForm">
+            <form action="${pageContext.request.contextPath}/register" method="post" enctype="multipart/form-data" id="registerForm">
                 
                 <div class="form-group">
                     <label for="fullName">Full Name</label>
-                    <input type="text" id="fullName" name="fullName" placeholder="Jane Doe" required>
+                    <input type="text" id="fullName" name="fullName" placeholder="e.g; Jane Doe" required>
                 </div>
 
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="janedoe99" required>
+                    <input type="text" id="username" name="username" placeholder="e.g; janedoe67" required>
                 </div>
 
                 <div class="form-group">
                     <label for="email">University Email</label>
-                    <input type="email" id="email" name="email" placeholder="jane.doe@islinkton.edu" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Academic Role</label>
-                    <div class="radio-group">
-                        <label>
-                            <input type="radio" name="role" value="Student" checked> Student
-                        </label>
-                        <label>
-                            <input type="radio" name="role" value="Faculty"> Faculty
-                        </label>
-                    </div>
+                    <input type="email" id="email" name="email" placeholder="e.g; jane.doe@islingtoncollege.edu.np" required>
                 </div>
 
                 <div class="form-row">
@@ -73,41 +77,16 @@
             </p>
         </div>
     </div>
-
-    <script>
-        // simple client-side validation
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            const pass = document.getElementById('password').value;
-            const confirm = document.getElementById('confirmPassword').value;
-            
-            if (pass !== confirm) {
-                e.preventDefault();
-                alert("Passwords do not match!");
-            }
-        });
-
-        // drag & drop + click upload
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('profileImage');
-
-        uploadArea.addEventListener('click', () => fileInput.click());
-
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = '#0066cc';
-        });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.style.borderColor = '#ccc';
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = '#ccc';
-            if (e.dataTransfer.files.length) {
-                fileInput.files = e.dataTransfer.files;
-            }
-        });
-    </script>
 </body>
+<script>
+    window.addEventListener("load", function () {
+        const errorBox = document.getElementById("errorBox");
+
+        if (errorBox) {
+            setTimeout(() => {
+                errorBox.classList.add("hide");
+            }, 3000); // visible for 3 seconds
+        }
+    });
+</script>
 </html>
