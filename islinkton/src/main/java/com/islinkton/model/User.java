@@ -23,7 +23,6 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = role;
         this.isApproved = false;   // new users need admin approval
     }
 
@@ -44,7 +43,7 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
-
+    
     public String getProfileImage() { return profileImage; }
     public void setProfileImage(String profileImage) { this.profileImage = profileImage; }
 
