@@ -11,12 +11,11 @@ import com.islinkton.utils.DBconfig;
 
 public class UserDAO {
 
-    public void insertUser(String fullName, String username, String  email, String password, String fileName) throws Exception {
+    public boolean insertUser(String fullName, String username, String  email, String password, String fileName) throws Exception {
 
         Connection con = DBconfig.getDbConnection();
 
-        String sql = "INSERT INTO users (full_name, username, email, password, role, profile_image, is_approved)"
-                   + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (full_name, username, email, password, role, profile_image, is_approved) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement pst = con.prepareStatement(sql);
 
@@ -28,9 +27,10 @@ public class UserDAO {
         pst.setString(6, fileName);
         pst.setBoolean(7, false);
 
-        pst.executeUpdate();
+        int rows = pst.executeUpdate();
         pst.close();
         con.close();
+        return rows > 0;
     }
 
     public User getUserByEmail(String email) throws Exception {
