@@ -2,7 +2,7 @@ package com.islinkton.filter;
 
 import java.io.IOException;
 
-import com.islinkton.model.UserModel;
+import com.islinkton.model.User;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
@@ -24,7 +24,7 @@ public class AuthenticationFilter implements Filter {
             return;
         }
 
-        UserModel user = (UserModel) session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
 
         if (req.getRequestURI().contains("/admin") && !"admin".equals(user.getRole())) {
             resp.sendRedirect(req.getContextPath() + "/login");

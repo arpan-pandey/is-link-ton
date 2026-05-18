@@ -17,18 +17,14 @@
 	        ${error}
 	    </div>
 	</c:if>
+	
     <div class="register-container">
-   		<h1 class="register-title">Islinkton</h1>
-        <p class="subtitle">Create your academic profile</p>
-
-<!-- 		<c:if test="${not empty sessionScope.success}">
-		    <div class="success-message">
-		        ${sessionScope.success}
-		    </div>
-		    <c:remove var="success" scope="session"/>  
-		</c:if> -->
+    
+    	<h1 class="register-title">Islinkton</h1>
+        	<p class="subtitle">Create your academic profile</p>
 		
         <div class="register-box">
+        
             <form action="${pageContext.request.contextPath}/register" method="post" enctype="multipart/form-data" id="registerForm">
                 
                 <div class="form-group">
@@ -58,16 +54,28 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Profile Image (Optional)</label>
-                    <div class="upload-area" id="uploadArea">
-                        <input type="file" id="profileImage" name="profileImage" accept="image/png, image/jpeg" style="display:none;">
-                        <div class="upload-content">
-                            <span class="upload-icon">+</span>
-                            <p>Upload a file or drag and drop</p>
-                            <small>PNG, JPG up to 5MB</small>
-                        </div>
-                    </div>
-                </div>
+                
+				    <label>Profile Image (Optional)</label>
+				
+				    <div class="upload-area" id="uploadArea">
+				
+				        <img id="imagePreview" src="#" alt="Preview">
+				
+				        <div class="upload-content" id="uploadContent">
+				            <span class="upload-icon">+</span>
+				            <p>Upload a file or drag and drop</p>
+				            <small>PNG, JPG up to 5MB</small>
+				        </div>
+				
+				        <input type="file"
+				               id="profileImage"
+				               name="profileImage"
+				               accept="image/*"
+				               onchange="previewFile()"
+				               hidden>
+				
+				    </div>
+				</div>
 
                 <button type="submit" class="register-btn">Register Account</button>
             </form>
@@ -86,6 +94,72 @@
             setTimeout(() => {
                 errorBox.classList.add("hide");
             }, 3000); // visible for 3 seconds
+        }
+    });
+
+    function previewFile() {
+
+        const preview =
+            document.getElementById("imagePreview");
+
+        const content =
+            document.getElementById("uploadContent");
+
+        const file =
+            document.getElementById("profileImage").files[0];
+
+        const reader = new FileReader();
+
+        reader.onloadend = function() {
+
+            preview.src = reader.result;
+
+            preview.style.display = "block";
+
+            content.style.display = "none";
+        };
+
+        if(file){
+            reader.readAsDataURL(file);
+        }
+    }
+
+    const uploadArea =
+        document.getElementById("uploadArea");
+
+    const fileInput =
+        document.getElementById("profileImage");
+
+    uploadArea.addEventListener("click", ()=> {
+        fileInput.click();
+    });
+
+    uploadArea.addEventListener("dragover", (e)=>{
+
+        e.preventDefault();
+
+        uploadArea.style.borderColor="#0066cc";
+
+    });
+
+    uploadArea.addEventListener("dragleave", ()=>{
+
+        uploadArea.style.borderColor="#ccc";
+
+    });
+
+    uploadArea.addEventListener("drop",(e)=>{
+
+        e.preventDefault();
+
+        uploadArea.style.borderColor="#ccc";
+
+        if(e.dataTransfer.files.length){
+
+            fileInput.files=e.dataTransfer.files;
+
+            previewFile();
+
         }
     });
 </script>

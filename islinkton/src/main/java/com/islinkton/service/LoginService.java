@@ -1,7 +1,7 @@
 package com.islinkton.service;
 
 import com.islinkton.dao.UserDAO;
-import com.islinkton.model.UserModel;
+import com.islinkton.model.User;
 import com.islinkton.utils.PasswordUtil;
 
 public class LoginService {
@@ -20,7 +20,7 @@ public class LoginService {
         try {
         	
         	UserDAO userDAO = new UserDAO();
-            UserModel user = userDAO.getUserByEmail(email);
+            User user = userDAO.getUserByEmail(email);
 
             // Check if user exists
             if (user == null) {

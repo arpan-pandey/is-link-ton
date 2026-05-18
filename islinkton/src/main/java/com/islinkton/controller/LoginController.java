@@ -1,7 +1,7 @@
 package com.islinkton.controller;
 
 import com.islinkton.dao.UserDAO;
-import com.islinkton.model.UserModel;
+import com.islinkton.model.User;
 import com.islinkton.service.LoginService;
 import com.islinkton.utils.CookieUtil;
 import com.islinkton.utils.SessionUtil;
@@ -29,7 +29,7 @@ public class LoginController extends HttpServlet {
 	    if ("Success".equals(status)) {
 	        try {
 	            UserDAO userDAO = new UserDAO();
-	            UserModel userData = userDAO.getUserByEmail(email);
+	            User userData = userDAO.getUserByEmail(email);
 
 	            if (userData == null) {
 	                request.setAttribute("error", "User not found");

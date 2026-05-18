@@ -7,41 +7,53 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - Islinkton</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/pages/login.css">
 </head>
 <body>
 
+	<c:if test="${not empty error}">
+        <div class="login-error-message" id="errorBox">${error}</div>
+    </c:if>
+
     <div class="login-container">
-        <h1 class="logo">Islinkton</h1>
-        <h2 class="welcome">Welcome Back</h2>
-        <p class="subtitle">Sign in to your account to continue</p>
-
-        <c:if test="${not empty error}">
-            <div class="error">${error}</div>
-        </c:if>
-
-        <form action="login" method="post" id="form">
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" name="email" required>
-            </div>
-
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password" required>
-            </div>
-
-            <div class="forgot">
-                <a href="#">Forgot Password?</a>
-            </div>
-
-            <button type="submit">Sign In</button>
-        </form>
-
-        <div class="register-link">
-            Don't have an account? <a href="${pageContext.request.contextPath}/register">Register</a>
-        </div>
+    
+        <h1 class="login-title">Islinkton</h1>
+        <p class="subtitle">An academic discourse platform</p>
+    	
+    	<div class="login-box">
+	
+	        <form action="${pageContext.request.contextPath}/login" method="post" id="loginForm">
+	            
+	            <div class="form-group">
+	                <label for="email">Email</label>
+	                <input type="email" name="email" id="email" placeholder="e.g; janedoe67" required>
+	            </div>
+	            
+	            <div class="form-group">
+	                <label for="password">Password</label>
+	                <input type="password" name="password" id="password" required>
+	            </div>
+	
+	            <button type="submit" class="login-btn">Access Portal</button>
+	        </form>
+	
+	        <p class="signup-link">
+	            Don't have an account? <a href="${pageContext.request.contextPath}/register">Sign up</a>
+	        </p>
+	    </div>
     </div>
 
 </body>
+<script>
+    window.addEventListener("load", function () {
+        const errorBox = document.getElementById("errorBox");
+
+        if (errorBox) {
+            setTimeout(() => {
+                errorBox.classList.add("hide");
+            }, 3000); // visible for 3 seconds
+        }
+    });
+</script>
 </html>
