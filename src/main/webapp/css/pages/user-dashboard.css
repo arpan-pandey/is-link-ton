@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+.recents{
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+.recents-titlebox{
+	display: flex;
+	justify-content: space-between;
+	border-bottom: 1px solid #c4c6cd;
+	padding: 10px 0; 
+}
+

@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/pages/register.css">
 </head>
-<body>
+<body class="center">
      <c:if test="${not empty error}">
 	    <div class="register-error-message" id="errorBox">
 	        ${error}

@@ -52,7 +52,7 @@ public class LoginController extends HttpServlet {
 	            if ("Admin".equals(userData.getRole())) {
 	            	response.sendRedirect(request.getContextPath() + "/admin/dashboard");
 	            } else {
-	            	response.sendRedirect(request.getContextPath() + "/student/dashboard");
+	            	response.sendRedirect(request.getContextPath() + "/dashboard");
 	            }
 
 	        } catch (Exception e) {

@@ -16,37 +16,10 @@ CREATE TABLE users (
 ---
 
 INSERT INTO users (full_name, username, email, password, role, is_approved, is_active)
-VALUES (
-    'System Administrator',
-    'admin',
-    'admin@islinkton.edu',
-    '$2a$12$wfoCoDeEx.uFpt/fUasT6eDh84mF.qKOtPDKNVhQEG6FVzWVeHQa.', -- the word "password" encrypted (BCrypt)
-    'Admin',
-    TRUE,
-    TRUE
-);
-
-INSERT INTO users (full_name, username, email, password, role, is_approved, is_active)
-VALUES (
-    'Module Teacher',
-    'teacher',
-    'teacher@islinkton.edu',
-    '$2a$12$wfoCoDeEx.uFpt/fUasT6eDh84mF.qKOtPDKNVhQEG6FVzWVeHQa.', -- the word "password" encrypted (BCrypt)
-    'Faculty',
-    TRUE,
-    TRUE
-);
-
-INSERT INTO users (full_name, username, email, password, role, is_approved, is_active)
-VALUES (
-    'John Student',
-    'student',
-    'student@islinkton.edu',
-    '$2a$12$wfoCoDeEx.uFpt/fUasT6eDh84mF.qKOtPDKNVhQEG6FVzWVeHQa.', -- the word "password" encrypted (BCrypt)
-    'Student',
-    TRUE,
-    TRUE
-);
+VALUES 
+    ('System Administrator', 'Admin', 'admin@islinkton.edu', '$2a$12$wfoCoDeEx.uFpt/fUasT6eDh84mF.qKOtPDKNVhQEG6FVzWVeHQa.', 'Admin', TRUE, TRUE), -- password is "password"
+    ('Module Teacher', 'Teacher', 'teacher@islinkton.edu', '$2a$12$wfoCoDeEx.uFpt/fUasT6eDh84mF.qKOtPDKNVhQEG6FVzWVeHQa.', 'Faculty', TRUE, TRUE), -- password is "password"
+    ('John Student', 'Student', 'student@islinkton.edu', '$2a$12$wfoCoDeEx.uFpt/fUasT6eDh84mF.qKOtPDKNVhQEG6FVzWVeHQa.', 'Student', TRUE, TRUE); -- password is "password"
 
 ---
 
@@ -84,7 +57,7 @@ CREATE TABLE threads (
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     category_id INT,
-    author_id INT NOT NULL,
+    author_id INT,
     is_approved BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
@@ -93,15 +66,45 @@ CREATE TABLE threads (
 
 ---
 
-CREATE TABLE posts (
+INSERT INTO threads (title, content, category_id, author_id, is_approved) VALUES
+('Midterm Exams Routine', 'Greetings Students!, Please find the timetable of the exam below:', 3, 2, TRUE),
+('How to prepare for upcoming midterm exams?', 'Any tips for time management and resources?', 2, 3, TRUE);
+
+---
+
+CREATE TABLE thread_votes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     thread_id INT NOT NULL,
     user_id INT NOT NULL,
+    UNIQUE KEY unique_user_vote (thread_id, user_id),
+    FOREIGN KEY (thread_id) REFERENCES threads(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+---
+
+INSERT INTO thread_votes (thread_id, user_id) VALUES
+(1, 1),
+(1, 2),
+(2, 2);
+
+---
+
+CREATE TABLE posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    thread_id INT NOT NULL,
+    user_id INT,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (thread_id) REFERENCES threads(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
+
+---
+
+INSERT INTO posts (thread_id, user_id, content) VALUES
+(1, 3, 'This routine seems very random.'),
+(2, 2, 'Make a proper timetable and revise daily.');
 
 ---
 
@@ -124,7 +127,6 @@ CREATE TABLE petitions (
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     created_by INT NOT NULL,
-    vote_count INT DEFAULT 0,
     is_approved BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
@@ -132,13 +134,27 @@ CREATE TABLE petitions (
 
 ---
 
+INSERT INTO petitions (title, content, created_by, is_approved) VALUES
+('Extend Library Hours During Exam Week', 'Current library timing is insufficient during exams.', 3, TRUE),
+('Improve WiFi in Skill Block', 'WiFi connectivity is very poor in the Skill Block.', 3, TRUE);
+
+---
+
 CREATE TABLE petition_votes (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    petition_id INT NOT NULL UNIQUE,
-    user_id INT NOT NULL UNIQUE,
+    petition_id INT NOT NULL,
+    user_id INT NOT NULL,
+    UNIQUE KEY unique_petition_vote (petition_id, user_id),
     FOREIGN KEY (petition_id) REFERENCES petitions(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+---
+
+INSERT INTO petition_votes (petition_id, user_id) VALUES
+(1, 1),
+(1, 2),
+(2, 3);
 
 ---
 
@@ -146,9 +162,16 @@ CREATE TABLE study_groups (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
     description TEXT,
-    module_name VARCHAR(100),
+    category_id INT,
     whatsapp_link VARCHAR(255),
-    created_by INT NOT NULL,
+    created_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 );
+
+---
+
+INSERT INTO study_groups (name, description, category_id, whatsapp_link, created_by) VALUES
+('CS301 Algorithm Study Group', 'Weekly discussions on DP and Graph problems', 12, 'https://chat.whatsapp.com/abc123', 2),
+('BBA Digital Marketing Group', 'Case studies and project help', 15, 'https://chat.whatsapp.com/xyz789', 3);
