@@ -14,13 +14,13 @@ CREATE TABLE users (
 
 ---
 
-INSERT INTO users (full_name, username, email, password, role, is_approved) 
+INSERT INTO users (full_name, username, email, password, role, is_approved)
 VALUES (
-    'System Administrator', 
-    'admin', 
-    'admin@islinkton.edu', 
-    '$2a$12$wfoCoDeEx.uFpt/fUasT6eDh84mF.qKOtPDKNVhQEG6FVzWVeHQa.',  -- This is BCrypt hash of password "password"
-    'admin', 
+    'System Administrator',
+    'admin',
+    'admin@islinkton.edu',
+    '$2a$12$wfoCoDeEx.uFpt/fUasT6eDh84mF.qKOtPDKNVhQEG6FVzWVeHQa.', 
+    'admin',
     TRUE
 );
 
@@ -40,7 +40,7 @@ CREATE TABLE threads (
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     category_id INT,
-    author_id INT,
+    author_id INT NOT NULL,
     is_approved BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
@@ -74,9 +74,46 @@ CREATE TABLE resources (
 
 ---
 
-INSERT INTO categories (name, description) VALUES 
+CREATE TABLE petitions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    created_by INT NOT NULL,
+    vote_count INT DEFAULT 0,
+    is_approved BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
+);
+
+---
+
+CREATE TABLE petition_votes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    petition_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_vote (petition_id, user_id),
+    FOREIGN KEY (petition_id) REFERENCES petitions(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+---
+
+CREATE TABLE study_groups (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    description TEXT,
+    module_name VARCHAR(100),
+    whatsapp_link VARCHAR(255),
+    created_by INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
+);
+
+---
+
+INSERT INTO categories (name, description) VALUES
 ('General Discussion', 'General topics and campus life'),
 ('Academic Help', 'Questions related to studies and modules'),
 ('Announcements', 'Official announcements from faculty/admin'),
-('Events', 'Upcoming events and discussions'),
-('Petitions', 'Student petitions and suggestions');
+('Events', 'Upcoming events and discussions');
