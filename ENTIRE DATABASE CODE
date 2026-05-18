@@ -9,6 +9,7 @@ CREATE TABLE users (
     role ENUM('Student', 'Faculty', 'Admin') NOT NULL DEFAULT 'Student',
     profile_image VARCHAR(255) DEFAULT NULL,
     is_approved BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -19,8 +20,9 @@ VALUES (
     'System Administrator',
     'admin',
     'admin@islinkton.edu',
-    '$2a$12$wfoCoDeEx.uFpt/fUasT6eDh84mF.qKOtPDKNVhQEG6FVzWVeHQa.', 
+    '$2a$12$wfoCoDeEx.uFpt/fUasT6eDh84mF.qKOtPDKNVhQEG6FVzWVeHQa.', -- the word "password" encrypted (BCrypt)
     'admin',
+    TRUE,
     TRUE
 );
 
@@ -29,9 +31,29 @@ VALUES (
 CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
-    description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    type ENUM('Thread','Petition','Course')
 );
+
+---
+
+INSERT INTO categories (name, type) VALUES
+	('General Discussion', 'Thread'),
+	('Academic Help', 'Thread'),
+	('Announcements', 'Thread'),
+	('Events', 'Thread'),
+	('College Facilities', 'Petition'),
+	('Academic Policy', 'Petition'),
+	('Student Life', 'Petition'),
+	('Computing', 'Course'),
+	('Networking', 'Course'),
+	('Cybersecurity', 'Course'),
+	('Multimedia', 'Course'),
+	('AI', 'Course'),
+	('BBA - International Business', 'Course'),
+	('BBA - Digital Business Management', 'Course'),
+	('BBA - Advertising and Marketing', 'Course'),
+	('BBA - Events & Tourism Management', 'Course'),
+	('BBA - Accounting & Finance', 'Course');
 
 ---
 
@@ -44,7 +66,7 @@ CREATE TABLE threads (
     is_approved BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
-    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
 ---
@@ -56,7 +78,7 @@ CREATE TABLE posts (
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (thread_id) REFERENCES threads(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
 ---
@@ -66,6 +88,7 @@ CREATE TABLE resources (
     title VARCHAR(200) NOT NULL,
     description TEXT,
     file_path VARCHAR(255) NOT NULL,
+    file_type VARCHAR(255) NOT NULL,
     uploaded_by INT NOT NULL,
     module_name VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -89,10 +112,8 @@ CREATE TABLE petitions (
 
 CREATE TABLE petition_votes (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    petition_id INT NOT NULL,
-    user_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY unique_vote (petition_id, user_id),
+    petition_id INT NOT NULL UNIQUE,
+    user_id INT NOT NULL UNIQUE,
     FOREIGN KEY (petition_id) REFERENCES petitions(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -107,13 +128,5 @@ CREATE TABLE study_groups (
     whatsapp_link VARCHAR(255),
     created_by INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 );
-
----
-
-INSERT INTO categories (name, description) VALUES
-('General Discussion', 'General topics and campus life'),
-('Academic Help', 'Questions related to studies and modules'),
-('Announcements', 'Official announcements from faculty/admin'),
-('Events', 'Upcoming events and discussions');

@@ -55,7 +55,7 @@
 
                 <div class="form-group">
                 
-				    <label>Profile Image (Optional)</label>
+				    <label>Profile Image</label>
 				
 				    <div class="upload-area" id="uploadArea">
 				

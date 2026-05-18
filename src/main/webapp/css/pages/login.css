@@ -69,7 +69,7 @@
     border-radius: 5px;
     font-size: 1rem;
     transition: border 0.3s;
-    font-family: "TW Cen MT Std", sans-serif;
+    font-family: "Times New Roman", serif;
 }
 
 .form-group input:focus {
@@ -94,6 +94,7 @@
     cursor: pointer;
     margin-top: 10px;
     transition: background 0.3s;
+    font-family: "Times New Roman", serif;
 }
 
 .login-btn:hover {
