@@ -12,7 +12,7 @@ public class Thread {
     private boolean isApproved;
     private LocalDateTime createdAt;
 
-    // default Constructor
+    // default constructor
     public Thread() {}
 
     // constructor with important fields

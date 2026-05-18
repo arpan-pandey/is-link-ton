@@ -36,17 +36,20 @@ public class LoginController extends HttpServlet {
 	                request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
 	                return;
 	            }
+	            
+	            
+	            System.out.println(userData.getRole());
 
-	            // Set Session
+	            // set Session
 	            SessionUtil.setAttribute(request, "user", userData, 3600);
 
-	            // Set Last Login Cookie
+	            // set Last Login Cookie
 	            String loginTime = LocalDateTime.now()
 	                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss"));
 	            CookieUtil.addCookie(response, "last_login", loginTime, 3600);
 
-	            // Redirect based on role
-	            if ("admin".equals(userData.getRole())) {
+	            // redirect based on role
+	            if ("Admin".equals(userData.getRole())) {
 	            	response.sendRedirect(request.getContextPath() + "/admin/dashboard");
 	            } else {
 	            	response.sendRedirect(request.getContextPath() + "/student/dashboard");
