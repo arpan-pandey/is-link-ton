@@ -14,6 +14,18 @@ CREATE TABLE users (
 
 ---
 
+INSERT INTO users (full_name, username, email, password, role, is_approved) 
+VALUES (
+    'System Administrator', 
+    'admin', 
+    'admin@islinkton.edu', 
+    '$2a$12$wfoCoDeEx.uFpt/fUasT6eDh84mF.qKOtPDKNVhQEG6FVzWVeHQa.',  -- This is BCrypt hash of password "password"
+    'admin', 
+    TRUE
+);
+
+---
+
 CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
