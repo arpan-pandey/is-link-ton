@@ -18,7 +18,7 @@ public class AuthenticationFilter implements Filter {
 
         String uri = req.getRequestURI();
 
-        // public pages - allow access
+        // public pages - allowed access
         if (uri.endsWith("/login") || uri.endsWith("/register") || 
             uri.contains("/css/") || uri.contains("/images/") || 
             uri.endsWith(".css") || uri.endsWith(".jpg") || uri.endsWith(".png")) {
@@ -26,19 +26,13 @@ public class AuthenticationFilter implements Filter {
             return;
         }
 
-        // no session → redirect to login
+        // no session - redirect to login
         if (session == null || session.getAttribute("user") == null) {
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
 
         User user = (User) session.getAttribute("user");
-
-        // unapproved user (except admin)
-        if (!user.isApproved() && !"admin".equalsIgnoreCase(user.getRole())) {
-            resp.sendRedirect(req.getContextPath() + "/pending-approval.jsp");
-            return;
-        }
 
         // admin-only pages
         if (uri.contains("/admin") && !"admin".equalsIgnoreCase(user.getRole())) {
