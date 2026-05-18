@@ -63,7 +63,7 @@
         		<div id="profile-icon">${initials}</div>
         		<div id="profile-details">
         			<span style="font-weight: bold;">${fullName}</span>
-        			<span id="user-title">Administrator</span>
+        			<span id="user-title">Administratr</span>
         		</div>
         	</div>
 	</aside>
