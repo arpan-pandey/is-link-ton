@@ -11,7 +11,7 @@ import com.islinkton.utils.DBconfig;
 
 public class CategoryDAO {
 
-    public void insertCategory(Category category) throws Exception {
+    public boolean insertCategory(Category category) throws Exception {
 
         Connection con = DBconfig.getDbConnection();
 
@@ -21,10 +21,12 @@ public class CategoryDAO {
         pst.setString(1, category.getName());
         pst.setString(2, category.getDescription());
 
-        pst.executeUpdate();
+        int rows = pst.executeUpdate();
 
         pst.close();
         con.close();
+        
+        return rows > 0;
     }
 
     public List<Category> getAllCategories() throws Exception {
@@ -81,7 +83,7 @@ public class CategoryDAO {
         return c;
     }
 
-    public void updateCategory(Category category) throws Exception {
+    public boolean updateCategory(Category category) throws Exception {
 
         Connection con = DBconfig.getDbConnection();
 
@@ -92,13 +94,15 @@ public class CategoryDAO {
         pst.setString(2, category.getDescription());
         pst.setInt(3, category.getId());
 
-        pst.executeUpdate();
+        int rows = pst.executeUpdate();
 
         pst.close();
         con.close();
+        
+        return rows > 0;
     }
 
-    public void deleteCategory(int id) throws Exception {
+    public boolean deleteCategory(int id) throws Exception {
 
         Connection con = DBconfig.getDbConnection();
 
@@ -107,9 +111,11 @@ public class CategoryDAO {
 
         pst.setInt(1, id);
 
-        pst.executeUpdate();
+        int rows = pst.executeUpdate();
 
         pst.close();
         con.close();
+        
+        return rows > 0;
     }
 }

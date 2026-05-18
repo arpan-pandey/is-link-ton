@@ -11,7 +11,7 @@ import com.islinkton.utils.DBconfig;
 
 public class PostDAO {
 
-    public void insertPost(Post post) throws Exception {
+    public boolean insertPost(Post post) throws Exception {
 
         Connection con = DBconfig.getDbConnection();
 
@@ -22,10 +22,12 @@ public class PostDAO {
         pst.setInt(2, post.getUserId());
         pst.setString(3, post.getContent());
 
-        pst.executeUpdate();
+        int rows = pst.executeUpdate();
 
         pst.close();
         con.close();
+        
+        return rows > 0;
     }
 
     public List<Post> getPostsByThread(int threadId) throws Exception {
@@ -58,7 +60,7 @@ public class PostDAO {
         return list;
     }
 
-    public void deletePost(int id) throws Exception {
+    public boolean deletePost(int id) throws Exception {
 
         Connection con = DBconfig.getDbConnection();
 
@@ -67,9 +69,11 @@ public class PostDAO {
 
         pst.setInt(1, id);
 
-        pst.executeUpdate();
+        int rows = pst.executeUpdate();
 
         pst.close();
         con.close();
+        
+        return rows > 0;
     }
 }

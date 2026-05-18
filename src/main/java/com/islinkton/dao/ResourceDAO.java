@@ -11,7 +11,7 @@ import com.islinkton.utils.DBconfig;
 
 public class ResourceDAO {
 
-    public void insertResource(Resource resource) throws Exception {
+    public boolean insertResource(Resource resource) throws Exception {
 
         Connection con = DBconfig.getDbConnection();
 
@@ -26,10 +26,12 @@ public class ResourceDAO {
         pst.setInt(4, resource.getUploadedBy());
         pst.setString(5, resource.getModuleName());
 
-        pst.executeUpdate();
+        int rows = pst.executeUpdate();
 
         pst.close();
         con.close();
+        
+        return rows > 0;
     }
 
     public List<Resource> getAllResources() throws Exception {
@@ -62,7 +64,7 @@ public class ResourceDAO {
         return list;
     }
 
-    public void updateResource(Resource resource) throws Exception {
+    public boolean updateResource(Resource resource) throws Exception {
 
         Connection con = DBconfig.getDbConnection();
 
@@ -75,13 +77,15 @@ public class ResourceDAO {
         pst.setString(4, resource.getModuleName());
         pst.setInt(5, resource.getId());
 
-        pst.executeUpdate();
+        int rows = pst.executeUpdate();
 
         pst.close();
         con.close();
+        
+        return rows > 0;
     }
 
-    public void deleteResource(int id) throws Exception {
+    public boolean deleteResource(int id) throws Exception {
 
         Connection con = DBconfig.getDbConnection();
 
@@ -90,9 +94,11 @@ public class ResourceDAO {
 
         pst.setInt(1, id);
 
-        pst.executeUpdate();
+        int rows = pst.executeUpdate();
 
         pst.close();
         con.close();
+        
+        return rows > 0;
     }
 }
