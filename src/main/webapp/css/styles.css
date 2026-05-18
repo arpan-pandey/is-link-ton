@@ -1,0 +1,27 @@
+@charset "UTF-8";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'TW Cen MT Std', sans-serif;
+    line-height: 1.6;
+    background: #F8F9FA;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+}
+
+/*placeholder css*/
+::placeholder {
+	color: #aaa;
+	opacity: 1;
+}

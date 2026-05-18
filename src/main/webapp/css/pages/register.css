@@ -1,0 +1,170 @@
+.register-container {
+    background: #F8F9FA;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.register-title {
+    text-align: center;
+    color: #162839;
+    font-size: 2rem;   
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.register-error-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 16px;
+    color: red;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid red;
+    transition: all 0.6s ease;
+    z-index: 999;
+}
+
+.register-error-message.hide {
+	right: -15%;
+	opacity: 0;	
+}
+
+.register-box {
+    background: white;
+    padding: 40px 30px;
+    border: 2px solid #C4C6CD;
+    border-radius: 2px;
+    width: 100%;
+    max-width: 480px;
+}
+
+#registerForm{
+	display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.form-group input[type="text"], .form-group input[type="email"], .form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    background: #fafafa;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border 0.3s;
+    font-family: "TW Cen MT Std", sans-serif;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.upload-area {
+
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+
+    padding: 30px;
+
+    min-height: 180px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    position: relative;
+
+    transition: .3s;
+}
+
+.upload-area:hover {
+    border-color: #0066cc;
+}
+
+.upload-content {
+    display: block;
+}
+
+.upload-icon {
+    font-size: 35px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+#imagePreview {
+
+    width: 100%;
+    max-height: 200px;
+
+    object-fit: contain;
+
+    display: none;
+
+    border-radius: 8px;
+}
+
+.register-btn {
+    width: 100%;
+    padding: 14px;
+    background: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 2px;
+    font-size: 1.1rem;
+    font-weight: 300;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s;
+}
+
+.register-btn:hover {
+    background: #1d252e;
+}
+
+.signin-link {
+    text-align: center;
+    margin-top: 20px;
+    color: #555;
+}
+
+.signin-link a {
+    color: #2c3e50;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.signin-link a:hover {
+    text-decoration: underline;
+}
