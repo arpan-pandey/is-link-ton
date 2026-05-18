@@ -3,27 +3,30 @@ package com.islinkton.model;
 import java.time.LocalDateTime;
 
 public class Thread {
-
+    
     private int id;
     private String title;
     private String content;
     private int categoryId;
     private int authorId;
+    private String authorName; // for display only
+    private String categoryName; // for display only
     private boolean isApproved;
     private LocalDateTime createdAt;
 
-    // default constructor
+    // default Constructor
     public Thread() {}
 
-    // constructor with important fields
+    // constructor for creating new thread
     public Thread(String title, String content, int categoryId, int authorId) {
         this.title = title;
         this.content = content;
         this.categoryId = categoryId;
         this.authorId = authorId;
-        this.isApproved = false; // threads need admin approval
+        this.isApproved = false;
     }
 
+    // getters and setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -38,6 +41,12 @@ public class Thread {
 
     public int getAuthorId() { return authorId; }
     public void setAuthorId(int authorId) { this.authorId = authorId; }
+
+    public String getAuthorName() { return authorName; }
+    public void setAuthorName(String authorName) { this.authorName = authorName; }
+
+    public String getCategoryName() { return categoryName; }
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
 
     public boolean isApproved() { return isApproved; }
     public void setApproved(boolean approved) { isApproved = approved; }
