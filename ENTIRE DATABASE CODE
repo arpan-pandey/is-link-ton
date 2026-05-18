@@ -15,13 +15,35 @@ CREATE TABLE users (
 
 ---
 
-INSERT INTO users (full_name, username, email, password, role, is_approved)
+INSERT INTO users (full_name, username, email, password, role, is_approved, is_active)
 VALUES (
     'System Administrator',
     'admin',
     'admin@islinkton.edu',
     '$2a$12$wfoCoDeEx.uFpt/fUasT6eDh84mF.qKOtPDKNVhQEG6FVzWVeHQa.', -- the word "password" encrypted (BCrypt)
-    'admin',
+    'Admin',
+    TRUE,
+    TRUE
+);
+
+INSERT INTO users (full_name, username, email, password, role, is_approved, is_active)
+VALUES (
+    'Module Teacher',
+    'teacher',
+    'teacher@islinkton.edu',
+    '$2a$12$wfoCoDeEx.uFpt/fUasT6eDh84mF.qKOtPDKNVhQEG6FVzWVeHQa.', -- the word "password" encrypted (BCrypt)
+    'Faculty',
+    TRUE,
+    TRUE
+);
+
+INSERT INTO users (full_name, username, email, password, role, is_approved, is_active)
+VALUES (
+    'John Student',
+    'student',
+    'student@islinkton.edu',
+    '$2a$12$wfoCoDeEx.uFpt/fUasT6eDh84mF.qKOtPDKNVhQEG6FVzWVeHQa.', -- the word "password" encrypted (BCrypt)
+    'Student',
     TRUE,
     TRUE
 );
