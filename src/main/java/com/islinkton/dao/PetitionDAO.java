@@ -63,7 +63,7 @@ public class PetitionDAO {
 	                "FROM petitions p " +
 	                "LEFT JOIN users u ON p.created_by = u.id " +
 	                "WHERE p.is_approved = TRUE " +
-	                "ORDER BY p.created_at DESC LIMIT 2";
+	                "ORDER BY p.created_at DESC LIMIT 3";
         
         PreparedStatement pst = con.prepareStatement(sql);
         ResultSet rs = pst.executeQuery();
