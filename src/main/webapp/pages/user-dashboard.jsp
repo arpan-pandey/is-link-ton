@@ -76,28 +76,36 @@
 				<h3>Recent Petitions</h3>
 				<a href="${pageContext.request.contextPath}/petitions/">View All →</a>
 			</div>
-				<div class="petition-card-container">
+			<div class="petition-card-container">
+				<c:forEach var="petition" items="${recentPetitions}">
 					<div class="card petition-card">
 						<div class="petition-main">
 							<div class="petition-details">
 								<span class="category-flair">Academic Policy</span>
-								<span class="petition-time-info">21 days ago</span>
+								<span class="petition-time-info"><c:out value="${petition.timeAgo}" /></span>
 							</div>
 							<div class="petition-content">
 								<span class="petition-title">
-									Extend the library hours during midterms
+									<a href="${pageContext.request.contextPath}/petitions/view?id=${petition.id}">
+										<c:out value="${petition.title}" />
+									</a>
 								</span>
-								<span class="petition-body">The current 10 PM closure of the central library restricts study time during peak assessment periods. This petition requests extending hours to 2 AM during</span>
-								<span class="petition-votes">Votes: 67</span>	
+								<span class="petition-body"><c:out value="${petition.content}" /></span>
+								<span class="petition-votes">Votes: <c:out value="${petition.voteCount}" /></span>	
 							</div>
 						</div>
 						<div class="petition-interaction">
-							<span class="petition-creator-info">By: @Student</span>
+							<span class="petition-creator-info">By: @<c:out value="${petition.creatorUsername}" /></span>
 							<a class="petition-vote-button" href="${pageContext.request.contextPath}/petitions/vote?id=${petition.id}">Vote</a>							
 						</div>
 					</div>
-				</div>
+				</c:forEach>
+
+				<c:if test="${empty recentPetitions}">
+					<p class="no-data-msg">No active student petitions found.</p>
+				</c:if>
 			</div>
+		</div>
 	</main>
 	
 	<jsp:include page="/components/footer.jsp" />

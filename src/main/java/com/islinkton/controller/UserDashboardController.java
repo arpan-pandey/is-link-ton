@@ -10,6 +10,8 @@ import java.util.List;
 import java.io.IOException;
 
 import com.islinkton.dao.ThreadDAO;
+import com.islinkton.dao.PetitionDAO;
+import com.islinkton.model.Petition;
 import com.islinkton.model.Thread;
 
 
@@ -24,13 +26,18 @@ public class UserDashboardController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
+			
+			// fetching from threads
             ThreadDAO threadDAO = new ThreadDAO();
             List<Thread> recentThreads = threadDAO.getRecentThreads();
-            
-            // attach list collection context to dashboard view scope
             request.setAttribute("recentThreads", recentThreads);
             
-            // forward view down to your target dashboard JSP file
+            // fetching from petitions
+            PetitionDAO petitionDAO = new PetitionDAO();
+            List<Petition> recentPetitions = petitionDAO.getRecentPetitions();
+            request.setAttribute("recentPetitions", recentPetitions);
+            
+            // forward view down to your the tageted dashboard JSP file
     		request.getRequestDispatcher("/pages/user-dashboard.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
