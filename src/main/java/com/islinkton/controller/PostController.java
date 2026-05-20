@@ -1,15 +1,20 @@
 package com.islinkton.controller;
 
+import java.util.List;
+import java.io.IOException;
+
 import com.islinkton.dao.PostDAO;
+import com.islinkton.dao.ThreadDAO;
 import com.islinkton.model.Post;
+import com.islinkton.model.Thread;
 import com.islinkton.model.User;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.io.IOException;
 
 @WebServlet("/posts")
 public class PostController extends HttpServlet {
@@ -41,26 +46,26 @@ public class PostController extends HttpServlet {
         try {
             if ("create".equals(action)) {
                 String content = request.getParameter("content");
+                String parentPostIdStr = request.getParameter("parentPostId");
                 
                 if (content == null || content.trim().isEmpty()) {
                     session.setAttribute("error", "Post content cannot be empty.");
                 } else {
                     Post post = new Post(threadId, user.getId(), content.trim());
-                    boolean success = postDAO.insertPost(post);
-                    if (success) {
-                        session.setAttribute("message", "Reply posted successfully!");
-                    } else {
-                        session.setAttribute("error", "Failed to submit post.");
+                    
+                    // binding parent id tracking info if it exists
+                    if (parentPostIdStr != null && !parentPostIdStr.trim().isEmpty()) {
+                        post.setParentPostId(Integer.parseInt(parentPostIdStr));
                     }
+                    
+                    postDAO.insertPost(post);
+                    session.setAttribute("message", "Posted successfully!");
                 }
                 
             } else if ("delete".equals(action)) {
                 String postIdStr = request.getParameter("postId");
                 if (postIdStr != null) {
                     int postId = Integer.parseInt(postIdStr);
-                    
-                    // Optional security check: You could fetch the post first to verify 
-                    // if (post.getUserId() == user.getId() || "ADMIN".equals(user.getRole()))
                     
                     boolean success = postDAO.deletePost(postId);
                     if (success) {
@@ -75,7 +80,44 @@ public class PostController extends HttpServlet {
             session.setAttribute("error", "An error occurred: " + e.getMessage());
         }
 
-        // 🔄 Always redirect back to the specific thread details view page
+        // always redirect back to the specific view-thread page
         response.sendRedirect(request.getContextPath() + "/threads/view?id=" + threadId);
+    }
+    
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        
+        try {
+            String threadIdStr = request.getParameter("id");
+            if (threadIdStr == null || threadIdStr.trim().isEmpty()) {
+                response.sendRedirect(request.getContextPath() + "/threads");
+                return;
+            }
+            
+            int threadId = Integer.parseInt(threadIdStr);
+            
+            // 1. Fetch the main thread data 
+            ThreadDAO threadDAO = new ThreadDAO();
+            Thread thread = threadDAO.getThreadById(threadId);
+            
+            if (thread == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Thread not found");
+                return;
+            }
+
+            PostDAO postDAO = new PostDAO();
+            List<Post> posts = postDAO.getPostsByThread(threadId);
+            
+            // 2. Bind both objects to the request scope so JSTL can read them
+            request.setAttribute("thread", thread);
+            request.setAttribute("posts", posts); // 👈 This MUST match ${posts} in your JSP!
+            
+            // 3. Forward to your JSP view page
+            request.getRequestDispatcher("/pages/thread-view.jsp").forward(request, response);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 }

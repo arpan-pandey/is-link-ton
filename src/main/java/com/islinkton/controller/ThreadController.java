@@ -54,8 +54,8 @@ public class ThreadController extends HttpServlet {
                     request.setAttribute("thread", thread);
                     
                     PostDAO postDAO = new PostDAO();
-                    List<Post> comments = postDAO.getPostsByThread(id);
-                    request.setAttribute("comments", comments);
+                    List<Post> posts = postDAO.getPostsByThread(id);
+                    request.setAttribute("posts", posts);
                     
                     request.getRequestDispatcher("/pages/view-thread.jsp").forward(request, response);
                 } else {

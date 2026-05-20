@@ -95,9 +95,11 @@ CREATE TABLE posts (
     thread_id INT NOT NULL,
     user_id INT,
     content TEXT NOT NULL,
+    parent_post_id INT DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (thread_id) REFERENCES threads(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (parent_post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
 
 ---
