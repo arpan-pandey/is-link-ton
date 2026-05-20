@@ -19,11 +19,21 @@ public class AuthenticationFilter implements Filter {
         String uri = req.getRequestURI();
 
         // public pages - allowed access
-        if (uri.endsWith("/login") || uri.endsWith("/register") || 
-            uri.contains("/css/") || uri.contains("/images/") || 
-            uri.endsWith(".css") || uri.endsWith(".jpg") || uri.endsWith(".png")) {
-            chain.doFilter(request, response);
-            return;
+        if (uri.equals("/") ||
+    	    uri.endsWith("/login") ||
+    	    uri.endsWith("/register") ||
+    	    uri.endsWith("/about") ||
+    	    uri.endsWith("/contact") ||
+    	    uri.contains("/css/") ||
+    	    uri.contains("/assets/") ||
+    	    uri.contains("/images/") ||
+    	    uri.endsWith(".css") ||
+    	    uri.endsWith(".jpg") ||
+    	    uri.endsWith(".png") ||
+    	    uri.endsWith(".jpeg")) {
+		        
+        		chain.doFilter(request, response);
+		        return;
         }
 
         // no session - redirect to login
