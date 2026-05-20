@@ -3,8 +3,10 @@ package com.islinkton.controller;
 import com.islinkton.model.Category;
 import com.islinkton.model.Thread;
 import com.islinkton.model.User;
+import com.islinkton.model.Post;
 import com.islinkton.service.ThreadService;
 import com.islinkton.dao.CategoryDAO;
+import com.islinkton.dao.PostDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -47,8 +49,14 @@ public class ThreadController extends HttpServlet {
                 String idStr = request.getParameter("id");
                 if (idStr != null) {
                     int id = Integer.parseInt(idStr);
+                    
                     Thread thread = threadService.getThreadById(id);
                     request.setAttribute("thread", thread);
+                    
+                    PostDAO postDAO = new PostDAO();
+                    List<Post> comments = postDAO.getPostsByThread(id);
+                    request.setAttribute("comments", comments);
+                    
                     request.getRequestDispatcher("/pages/view-thread.jsp").forward(request, response);
                 } else {
                     response.sendRedirect(request.getContextPath() + "/threads");
@@ -64,10 +72,42 @@ public class ThreadController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // create new thread -> post to threads/
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        String pathInfo = request.getPathInfo();
 
+        /*
+         * COMMENT CREATION
+         */
+        if (pathInfo != null && pathInfo.equals("/comment/create")) {
+            String threadIdStr = request.getParameter("threadId");
+            String commentBody = request.getParameter("commentBody");
+
+            // Basic validation checking
+            if (commentBody == null || commentBody.trim().isEmpty()) {
+                response.sendRedirect(request.getContextPath() + "/threads");
+                return;
+            }
+
+            try {
+                int threadId = Integer.parseInt(threadIdStr.trim());
+
+                Post post = new Post(threadId, user.getId(), commentBody.trim());
+                PostDAO postDAO = new PostDAO();
+                boolean success = postDAO.insertPost(post);
+
+                // Redirect right back to view the exact thread detail page freshly updated
+                response.sendRedirect(request.getContextPath() + "/threads/view?id=" + threadId);
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error adding comment.");
+            }
+            return; // break execution out safely
+        }
+        
+        /*
+         * THREAD CREATION
+         */
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         String categoryIdStr = request.getParameter("categoryId");

@@ -16,19 +16,23 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet("/resources")
-@MultipartConfig(maxFileSize = 50 * 1024 * 1024) // max size - 50 MB
+@MultipartConfig(maxFileSize = 50 * 1024 * 1024)
 public class ResourceController extends HttpServlet {
 
     private ResourceService resourceService = new ResourceService();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
         try {
-            // You can add role-based filtering later if needed
             List<Resource> resources = resourceService.getAllResources();
             request.setAttribute("resources", resources);
             request.getRequestDispatcher("/pages/resources/list.jsp").forward(request, response);
@@ -45,17 +49,20 @@ public class ResourceController extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 
+        if (user == null || !"Faculty".equalsIgnoreCase(user.getRole())) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
         String title = request.getParameter("title");
         String description = request.getParameter("description");
         String categoryIdStr = request.getParameter("categoryId");
 
-        // null validation
         if (title == null || title.trim().isEmpty()) {
             request.setAttribute("error", "Title is required");
             request.getRequestDispatcher("/pages/resources/upload.jsp").forward(request, response);
             return;
         }
-
         if (categoryIdStr == null || categoryIdStr.trim().isEmpty()) {
             request.setAttribute("error", "Please select a category");
             request.getRequestDispatcher("/pages/resources/upload.jsp").forward(request, response);
@@ -69,9 +76,8 @@ public class ResourceController extends HttpServlet {
                 request.getRequestDispatcher("/pages/resources/upload.jsp").forward(request, response);
                 return;
             }
-
-            // upload file using FileUploadUtil
-            String fileName = FileUploadUtil.uploadFile(filePart, getServletContext().getRealPath(""));
+            
+            String fileName = FileUploadUtil.uploadResourceFile(filePart);
 
             if (fileName == null) {
                 request.setAttribute("error", "File upload failed");
@@ -79,13 +85,12 @@ public class ResourceController extends HttpServlet {
                 return;
             }
 
-            // extract extension (PDF, DOCX, PPTX, etc.)
             String fileExtension = getFileExtension(fileName);
 
             Resource resource = new Resource();
             resource.setTitle(title.trim());
             resource.setDescription(description != null ? description.trim() : "");
-            resource.setFilePath("uploads/resources/" + fileName);
+            resource.setFilePath("assets/files/" + fileName);   // ← Updated path
             resource.setFileType(fileExtension.toUpperCase());
             resource.setUploadedBy(user.getId());
             resource.setCategoryId(Integer.parseInt(categoryIdStr));
@@ -98,8 +103,6 @@ public class ResourceController extends HttpServlet {
                 request.setAttribute("error", "Failed to save resource.");
             }
 
-        } catch (NumberFormatException e) {
-            request.setAttribute("error", "Invalid category selected.");
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Error: " + e.getMessage());
@@ -108,7 +111,6 @@ public class ResourceController extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/resources");
     }
 
-    // helper method to extract file extension
     private String getFileExtension(String fileName) {
         if (fileName == null || !fileName.contains(".")) {
             return "UNKNOWN";
