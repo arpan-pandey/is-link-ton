@@ -10,50 +10,32 @@ import com.islinkton.model.Category;
 import com.islinkton.utils.DBconfig;
 
 public class CategoryDAO {
-
-    public boolean insertCategory(Category category) throws Exception {
-
+	
+	// categories are hardcoded into the database so CRUD isn't needed
+    
+    public List<Category> getCategoriesByType(String type) throws Exception {
+        List<Category> categories = new ArrayList<>();
         Connection con = DBconfig.getDbConnection();
-
-        String sql = "INSERT INTO categories (name, description) VALUES (?, ?)";
-        PreparedStatement pst = con.prepareStatement(sql);
-
-        pst.setString(1, category.getName());
-        pst.setString(2, category.getDescription());
-
-        int rows = pst.executeUpdate();
-
-        pst.close();
-        con.close();
         
-        return rows > 0;
-    }
-
-    public List<Category> getAllCategories() throws Exception {
-
-        List<Category> list = new ArrayList<>();
-
-        Connection con = DBconfig.getDbConnection();
-
-        String sql = "SELECT * FROM categories";
+        // filtering categories strictly by type
+        String sql = "SELECT id, name, type FROM categories WHERE type = ? ORDER BY name ASC";
+        
         PreparedStatement pst = con.prepareStatement(sql);
-
+        pst.setString(1, type);
         ResultSet rs = pst.executeQuery();
 
         while (rs.next()) {
             Category c = new Category();
             c.setId(rs.getInt("id"));
             c.setName(rs.getString("name"));
-            c.setDescription(rs.getString("description"));
-
-            list.add(c);
+            c.setType(rs.getString("type"));
+            categories.add(c);
         }
 
         rs.close();
         pst.close();
         con.close();
-
-        return list;
+        return categories;
     }
 
     public Category getCategoryById(int id) throws Exception {
@@ -73,7 +55,7 @@ public class CategoryDAO {
             c = new Category();
             c.setId(rs.getInt("id"));
             c.setName(rs.getString("name"));
-            c.setDescription(rs.getString("description"));
+            c.setType(rs.getString("type"));
         }
 
         rs.close();
@@ -81,41 +63,5 @@ public class CategoryDAO {
         con.close();
 
         return c;
-    }
-
-    public boolean updateCategory(Category category) throws Exception {
-
-        Connection con = DBconfig.getDbConnection();
-
-        String sql = "UPDATE categories SET name=?, description=? WHERE id=?";
-        PreparedStatement pst = con.prepareStatement(sql);
-
-        pst.setString(1, category.getName());
-        pst.setString(2, category.getDescription());
-        pst.setInt(3, category.getId());
-
-        int rows = pst.executeUpdate();
-
-        pst.close();
-        con.close();
-        
-        return rows > 0;
-    }
-
-    public boolean deleteCategory(int id) throws Exception {
-
-        Connection con = DBconfig.getDbConnection();
-
-        String sql = "DELETE FROM categories WHERE id=?";
-        PreparedStatement pst = con.prepareStatement(sql);
-
-        pst.setInt(1, id);
-
-        int rows = pst.executeUpdate();
-
-        pst.close();
-        con.close();
-        
-        return rows > 0;
     }
 }

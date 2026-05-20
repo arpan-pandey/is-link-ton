@@ -9,6 +9,8 @@ public class Post {
     private int userId;
     private String content;
     private LocalDateTime createdAt;
+    private String authorUserName; // for display
+    private String userRole; // for display
 
     // default constructor
     public Post() {}
@@ -34,4 +36,10 @@ public class Post {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    
+    public String getAuthorUserName() { return authorUserName; }
+    public void setAuthorUserName(String authorUserName) { this.authorUserName = authorUserName; }
+
+    public String getUserRole() { return userRole; }
+    public void setUserRole(String userRole) { this.userRole = userRole; }
 }

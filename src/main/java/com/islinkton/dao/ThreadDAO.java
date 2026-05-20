@@ -101,7 +101,7 @@ public class ThreadDAO {
 
     public Thread getThreadById(int id) throws Exception {
         Connection con = DBconfig.getDbConnection();
-        String sql = "SELECT t.id, t.title, t.content, t.created_at, " +
+        String sql = "SELECT t.id, t.title, t.content, t.created_at, t.category_id, t.author_id, t.is_approved, " +
                 "c.name AS category_name, " +
                 "COALESCE(u.username, 'Deleted User') AS author_username, " +
                 "(SELECT COUNT(*) FROM thread_votes tv WHERE tv.thread_id = t.id) AS vote_count, " +

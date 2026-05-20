@@ -1,8 +1,10 @@
 package com.islinkton.controller;
 
+import com.islinkton.model.Category;
 import com.islinkton.model.Thread;
 import com.islinkton.model.User;
 import com.islinkton.service.ThreadService;
+import com.islinkton.dao.CategoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -20,14 +22,6 @@ public class ThreadController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-
-        if (user == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
-
         String pathInfo = request.getPathInfo();   // e.g., threads/create, threads/view, threads/
 
         try {
@@ -36,12 +30,16 @@ public class ThreadController extends HttpServlet {
             	// list all threads in /threads
                 List<Thread> threads = threadService.getAllApprovedThreads();
                 request.setAttribute("threads", threads);
-                request.getRequestDispatcher("/pages/threads/list.jsp").forward(request, response);
+                request.getRequestDispatcher("/pages/threads-list.jsp").forward(request, response);
 
             } else if (pathInfo.equals("/create")) {
                 
             	// show create form in /threads/create
-                request.getRequestDispatcher("/pages/threads/create.jsp").forward(request, response);
+            	CategoryDAO categoryDAO = new CategoryDAO();
+            	List<Category> threadCategories = categoryDAO.getCategoriesByType("Thread");
+            	request.setAttribute("categories", threadCategories);
+            	
+                request.getRequestDispatcher("/pages/create-thread.jsp").forward(request, response);
 
             } else if (pathInfo.equals("/view")) {
                 
@@ -51,7 +49,7 @@ public class ThreadController extends HttpServlet {
                     int id = Integer.parseInt(idStr);
                     Thread thread = threadService.getThreadById(id);
                     request.setAttribute("thread", thread);
-                    request.getRequestDispatcher("/pages/threads/view.jsp").forward(request, response);
+                    request.getRequestDispatcher("/pages/view-thread.jsp").forward(request, response);
                 } else {
                     response.sendRedirect(request.getContextPath() + "/threads");
                 }
@@ -77,7 +75,7 @@ public class ThreadController extends HttpServlet {
         // null validations
         if (title == null || title.trim().isEmpty()) {
             request.setAttribute("error", "Thread title is required");
-            request.getRequestDispatcher("/pages/threads/create.jsp").forward(request, response);
+            request.getRequestDispatcher("/pages/create-thread.jsp").forward(request, response);
             return;
         }
         if (content == null || content.trim().isEmpty()) {

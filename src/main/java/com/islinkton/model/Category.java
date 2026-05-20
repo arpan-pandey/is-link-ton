@@ -6,7 +6,7 @@ public class Category {
 
     private int id;
     private String name;
-    private String description;
+    private String type;
     private LocalDateTime createdAt;
 
     // default constructor
@@ -15,7 +15,7 @@ public class Category {
     // constructor with important fields
     public Category(String name, String description) {
         this.name = name;
-        this.description = description;
+        this.type = description;
     }
 
     public int getId() { return id; }
@@ -24,8 +24,8 @@ public class Category {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

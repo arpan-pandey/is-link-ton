@@ -11,8 +11,10 @@ import java.io.IOException;
 
 import com.islinkton.dao.ThreadDAO;
 import com.islinkton.dao.PetitionDAO;
+import com.islinkton.dao.ResourceDAO;
 import com.islinkton.model.Petition;
 import com.islinkton.model.Thread;
+import com.islinkton.model.Resource;
 
 
 @WebServlet(asyncSupported = true, urlPatterns = { "/dashboard" })
@@ -36,6 +38,11 @@ public class UserDashboardController extends HttpServlet {
             PetitionDAO petitionDAO = new PetitionDAO();
             List<Petition> recentPetitions = petitionDAO.getRecentPetitions();
             request.setAttribute("recentPetitions", recentPetitions);
+            
+            ResourceDAO resourceDAO = new ResourceDAO();
+            List<Resource> recentResources = resourceDAO.getRecentResources();
+            request.setAttribute("recentResources", recentResources);
+            
             
             // forward view down to your the tageted dashboard JSP file
     		request.getRequestDispatcher("/pages/user-dashboard.jsp").forward(request, response);
