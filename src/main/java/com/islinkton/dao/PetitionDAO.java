@@ -84,34 +84,7 @@ public class PetitionDAO {
         con.close();
         return petitions;
     }
-
-    public Petition getPetitionById(int id) throws Exception {
-        Connection con = DBconfig.getDbConnection();
-        String sql = " SELECT p.*, u.username as creator_username "
-            + "FROM petitions p "
-            + "JOIN users u ON p.created_by = u.id "
-            + "WHERE p.id = ?";
-        
-        PreparedStatement pst = con.prepareStatement(sql);
-        pst.setInt(1, id);
-        ResultSet rs = pst.executeQuery();
-
-        Petition petition = null;
-        if (rs.next()) {
-            petition = new Petition();
-            petition.setId(rs.getInt("id"));
-            petition.setTitle(rs.getString("title"));
-            petition.setContent(rs.getString("content"));
-            petition.setCreatorUsername(rs.getString("creator_username"));
-            petition.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
-        }
-
-        rs.close();
-        pst.close();
-        con.close();
-        return petition;
-    }
-
+    
     public boolean approvePetition(int petitionId) throws Exception {
         Connection con = DBconfig.getDbConnection();
         String sql = "UPDATE petitions SET is_approved = TRUE WHERE id = ?";

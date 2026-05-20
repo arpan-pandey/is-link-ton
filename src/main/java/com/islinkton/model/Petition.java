@@ -9,6 +9,7 @@ public class Petition {
     private String title;
     private String content;      
     private String creatorUsername;
+    private boolean isApproved;
     private int voteCount;
     private LocalDateTime createdAt;
 
@@ -33,6 +34,9 @@ public class Petition {
     
     public String getCreatorUsername() { return creatorUsername; }
     public void setCreatorUsername(String creatorUsername) { this.creatorUsername = creatorUsername; }
+    
+    public boolean isApproved() { return isApproved; }
+    public void setApproved(boolean approved) { isApproved = approved; }
     
     public int getVoteCount() { return voteCount; }
     public void setVoteCount(int voteCount) { this.voteCount = voteCount; }

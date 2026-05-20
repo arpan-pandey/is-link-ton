@@ -18,9 +18,9 @@
 		<!-- basic breadcrumb navigator at the top of the main section (&gt; is ' > ')-->
 		<nav class="breadcrumb-nav">
 			<a href="${pageContext.request.contextPath}/threads">Threads</a> &gt; 
-			<a href="${pageContext.request.contextPath}/threads?category=${thread.categoryId}">
+			<span>
 				<c:out value="${thread.categoryName}" />
-			</a> &gt; 
+			</span> &gt; 
 			<span class="active-crumb"><c:out value="${thread.title}" /></span>
 		</nav>
 		

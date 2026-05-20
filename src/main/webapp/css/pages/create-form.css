@@ -1,0 +1,165 @@
+@charset "UTF-8";
+
+/* THREAD LIST */
+
+.creation-container{
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+.creation-button-container{
+	display: flex;
+	justify-content: space-between;
+	
+	/* second div */
+	& > div:nth-child(2){
+		display: flex;
+		align-items: flex-end;
+	}
+}
+
+.creation-button{
+	color: white;	
+	background: #162839;
+	padding: 10px 15px;
+	border: 1px solid #162839;
+	transition: all 0.3s ease;
+	
+	&:hover{
+		background: white;
+		color: #002e2e;
+		border: 1px solid #002e2e;
+	}
+}
+
+/* CREATE THREAD */
+
+.form-main-container {
+    background: #F8F9FA;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    min-height: 80vh;
+}
+
+.form-card {
+    background: white;
+    padding: 40px 30px;
+    border: 2px solid #C4C6CD;
+    border-radius: 2px;
+    width: 100%;
+    max-width: 480px;
+    box-sizing: border-box;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-header h2 {
+    text-align: center;
+    color: #162839;
+    font-size: 2rem;
+}
+
+.form-header p {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.academic-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-group {
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+/* Styled to match your explicit text inputs and select dropdown definitions */
+.form-group input[type="text"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    background: #fafafa;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border 0.3s;
+    font-family: "Times New Roman", serif;
+    box-sizing: border-box;
+}
+
+.form-group input[type="text"]:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+/* Form Action Layout mirroring the full width single-button pattern */
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    background: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 2px;
+    font-size: 1.1rem;
+    font-weight: 300;
+    cursor: pointer; 
+    transition: all 0.3s;
+    font-family: "Times New Roman", serif;
+}
+
+.btn-primary:hover {
+    background: #1d252e;
+}
+
+.btn-secondary {
+    background: white;
+    color: red;
+    border: 1px solid red;
+    text-align: center;
+    padding: 10px 14px;
+}
+
+.btn-secondary:hover {
+    background: #F2D1C9;
+}
+
+.alert-danger {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 16px;
+    color: red;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid red;
+    transition: all 0.6s ease;
+    z-index: 999;
+}

@@ -8,14 +8,22 @@
 <meta charset="UTF-8">
 <title>Threads - Islinkton</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/pages/threads.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/pages/create-form.css">
 </head>
 <body>
 	<jsp:include page="/components/user-header.jsp" />
 	
-	<main class="threads-container">
-		<div class="threads-button-container card">
-			<a class="create-thread-button" href="${pageContext.request.contextPath}/threads/create">Create Thread</a>
+	<main class="creation-container">
+		<div class="creation-button-container">
+			<div>
+			<h1 class="page-title">Threads</h1>
+				<span class="page-subtitle">
+					Academic Discourse, Campus News & Announcements
+				</span>
+			</div>
+			<div>
+				<a class="creation-button" href="${pageContext.request.contextPath}/threads/create">Create Thread</a>
+			</div>
 		</div>
 		<div class="threads-card-container">
 			<c:forEach var="thread" items="${threads}">

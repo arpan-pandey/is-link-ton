@@ -4,7 +4,7 @@
 <header class="header">
     <div class="header-container">
         <div class="logo">
-            <h2><a href="${pageContext.request.contextPath}/">Islinkton</a></h2>
+            <h2><a href="${pageContext.request.contextPath}/dashboard">Islinkton</a></h2>
         </div>
 
         <nav class="main-nav">
@@ -14,7 +14,7 @@
             <a href="${pageContext.request.contextPath}/resources" class="nav-link" data-path="/resources">Resources</a>
         </nav>
 
-        <div class="header-right">
+        <div class="header-right center">
             <c:if test="${not empty user}">
 			    <a href="${pageContext.request.contextPath}/profile" class="profile-link">
 			        <c:choose>
@@ -32,7 +32,7 @@
 			            </c:otherwise>
 			        </c:choose>
 			    </a>
-			    <a href="${pageContext.request.contextPath}/logout" class="logout-btn">Logout</a>
+			    <a href="${pageContext.request.contextPath}/logout" class="nav-link">Logout</a>
 			</c:if>
         </div>
     </div>

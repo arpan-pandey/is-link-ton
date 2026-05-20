@@ -33,7 +33,7 @@
 				<div class="recents">
 					<div class="recents-titlebox">
 						<h3>Recent Threads</h3>
-						<a href="${pageContext.request.contextPath}/threads/">View All →</a>
+						<a href="${pageContext.request.contextPath}/threads/" class="nav-link">View All →</a>
 					</div>
 					<div class="threads-card-container">
 						<c:forEach var="thread" items="${recentThreads}">
@@ -76,7 +76,7 @@
 				<div class="recents">
 					<div class="recents-titlebox">
 						<h3>Recent Petitions</h3>
-						<a href="${pageContext.request.contextPath}/petitions/">View All →</a>
+						<a href="${pageContext.request.contextPath}/petitions/" class="nav-link">View All →</a>
 					</div>
 					<div class="petition-card-container">
 						<c:forEach var="petition" items="${recentPetitions}">
@@ -113,7 +113,7 @@
 			<div class="recents" style="flex: 1;">
 			    <div class="recents-titlebox">
 			        <h3>Recent Resources</h3>
-			        <a href="${pageContext.request.contextPath}/resources">View All →</a>
+			        <a href="${pageContext.request.contextPath}/resources" class="nav-link">View All →</a>
 			    </div>
 			    
 			    <div class="resources-card-container">

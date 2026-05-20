@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Create Thread - Islinkton</title>
+<title>Create Petition - Islinkton</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/pages/create-form.css">
 </head>
@@ -16,8 +16,8 @@
     <main class="form-main-container">
         <div class="form-card">
             <div class="form-header">
-                <h2>Create a New Thread</h2>
-                <p>Share your ideas, questions, or resources with the Islinkton student community.</p>
+                <h2>Create a New Petition</h2>
+                <p>Start a petition to voice what matters to the student community.</p>
             </div>
             
             <c:if test="${not empty errorMessage}">
@@ -29,19 +29,19 @@
             <form action="${pageContext.request.contextPath}/threads/create" method="POST" class="academic-form">
                 
                 <div class="form-group">
-                    <label for="threadTitle">Thread Title</label>
+                    <label for="petitionTitle">Petition Title</label>
                     <input 
                         type="text" 
-                        id="threadTitle" 
+                        id="petitionTitle" 
                         name="title" 
                         required
-                        placeholder="e.g., 'Questions regarding the upcoming Midterm format'" 
+                        placeholder="e.g., 'Betterment of Existing Attendance System Modules'" 
                     />
                 </div>
 
                 <div class="form-group">
-                    <label for="threadCategory">Category Flair</label>
-                    <select id="threadCategory" name="categoryId" required>
+                    <label for="petitionCategory">Category Flair</label>
+                    <select id="petitionCategory" name="categoryId" required>
                         <option value="" disabled selected>Select a Suitable Flair</option>
                         <c:forEach var="category" items="${categories}">
                             <option value="${category.id}" ${param.categoryId == category.id ? 'selected' : ''}>
@@ -51,19 +51,8 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="threadContent">Body Content</label>
-                    <textarea 
-                        id="threadContent" 
-                        name="content" 
-                        rows="8" 
-                        placeholder="Provide details, background context, or instructions here..." 
-                        required
-                    ><c:out value="${param.content}" /></textarea>
-                </div>
-
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Publish Thread</button>
+                    <button type="submit" class="btn btn-primary">Start Petition</button>
                     <a href="${pageContext.request.contextPath}/threads" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
