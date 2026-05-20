@@ -12,36 +12,39 @@ public class AuthenticationFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        HttpServletRequest req = (HttpServletRequest) request;
+    	HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
-        HttpSession session = req.getSession(false);
-
+        String contextPath = req.getContextPath();
         String uri = req.getRequestURI();
-
+        String path = uri.substring(contextPath.length()); // cleaner path (/login, /css/styles.css, etc.)
+        
+        
         // public pages - allowed access
-        if (uri.equals("/") ||
-    	    uri.endsWith("/login") ||
-    	    uri.endsWith("/register") ||
-    	    uri.endsWith("/about") ||
-    	    uri.endsWith("/contact") ||
-    	    uri.contains("/css/") ||
-    	    uri.contains("/assets/") ||
-    	    uri.contains("/images/") ||
-    	    uri.endsWith(".css") ||
-    	    uri.endsWith(".jpg") ||
-    	    uri.endsWith(".png") ||
-    	    uri.endsWith(".jpeg")) {
-		        
-        		chain.doFilter(request, response);
-		        return;
-        }
-
+        if (path.equals("/home") ||
+	        path.equals("/login") ||
+	        path.equals("/register") ||
+	        path.equals("/about") ||
+	        path.equals("/contact") ||
+	        path.startsWith("/css/") ||
+	        path.startsWith("/assets/") ||
+	        path.startsWith("/images/") ||
+	        path.endsWith(".css") ||
+	        path.endsWith(".jpg") ||
+	        path.endsWith(".png") ||
+	        path.endsWith(".jpeg")) {
+	        
+	        chain.doFilter(request, response);
+	        return;
+	    }
+        
+        HttpSession session = req.getSession(false);
+        
         // no session - redirect to login
         if (session == null || session.getAttribute("user") == null) {
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
-
+        
         User user = (User) session.getAttribute("user");
 
         // admin-only pages
