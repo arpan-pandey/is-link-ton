@@ -29,12 +29,16 @@ public class ThreadDAO {
         List<Thread> threads = new ArrayList<>();
         Connection con = DBconfig.getDbConnection();
         
-        String sql = " SELECT t.*, u.username as author_username, c.name as category_name " 
-            + "FROM threads t "
-            + "JOIN users u ON t.author_id = u.id " 
-            + "LEFT JOIN categories c ON t.category_id = c.id " 
-            + "WHERE t.is_approved = TRUE "
-            + "ORDER BY t.created_at DESC ";
+        String sql = "SELECT t.id, t.title, t.content, t.created_at, " +
+                "c.name AS category_name, " +
+                "COALESCE(u.username, 'Deleted User') AS author_username, " +
+                "(SELECT COUNT(*) FROM thread_votes tv WHERE tv.thread_id = t.id) AS vote_count, " +
+                "(SELECT COUNT(*) FROM posts p WHERE p.thread_id = t.id) AS comment_count " +
+                "FROM threads t " +
+                "LEFT JOIN categories c ON t.category_id = c.id " +
+                "LEFT JOIN users u ON t.author_id = u.id " +
+                "WHERE t.is_approved = TRUE " +
+                "ORDER BY t.created_at DESC";
         
         PreparedStatement pst = con.prepareStatement(sql);
         ResultSet rs = pst.executeQuery();
@@ -44,11 +48,11 @@ public class ThreadDAO {
             t.setId(rs.getInt("id"));
             t.setTitle(rs.getString("title"));
             t.setContent(rs.getString("content"));
-            t.setCategoryId(rs.getInt("category_id"));
-            t.setAuthorId(rs.getInt("author_id"));
-            t.setAuthorUserName(rs.getString("author_username"));
+            t.setCreatedAt(rs.getObject("created_at", LocalDateTime.class)); // reading the SQL timestamp value directly into a LocalDateTime object
             t.setCategoryName(rs.getString("category_name"));
-            t.setApproved(rs.getBoolean("is_approved"));
+            t.setAuthorUserName(rs.getString("author_username"));
+            t.setVoteCount(rs.getInt("vote_count"));
+            t.setCommentCount(rs.getInt("comment_count"));
             threads.add(t);
         }
 
@@ -97,11 +101,16 @@ public class ThreadDAO {
 
     public Thread getThreadById(int id) throws Exception {
         Connection con = DBconfig.getDbConnection();
-        String sql = " SELECT t.*, u.username as author_username, c.name as category_name "
-            + "FROM threads t "
-            + "JOIN users u ON t.author_id = u.id "
-            + "LEFT JOIN categories c ON t.category_id = c.id " 
-            + "WHERE t.id = ?";
+        String sql = "SELECT t.id, t.title, t.content, t.created_at, " +
+                "c.name AS category_name, " +
+                "COALESCE(u.username, 'Deleted User') AS author_username, " +
+                "(SELECT COUNT(*) FROM thread_votes tv WHERE tv.thread_id = t.id) AS vote_count, " +
+                "(SELECT COUNT(*) FROM posts p WHERE p.thread_id = t.id) AS comment_count " +
+                "FROM threads t " +
+                "LEFT JOIN categories c ON t.category_id = c.id " +
+                "LEFT JOIN users u ON t.author_id = u.id " +
+                "WHERE t.is_approved = TRUE " +
+                "AND t.id = ?";
         
         PreparedStatement pst = con.prepareStatement(sql);
         pst.setInt(1, id);
@@ -118,6 +127,9 @@ public class ThreadDAO {
             thread.setAuthorUserName(rs.getString("author_username"));
             thread.setCategoryName(rs.getString("category_name"));
             thread.setApproved(rs.getBoolean("is_approved"));
+            thread.setCreatedAt(rs.getObject("created_at", LocalDateTime.class)); // reading the SQL timestamp value directly into a LocalDateTime object
+            thread.setVoteCount(rs.getInt("vote_count"));
+            thread.setCommentCount(rs.getInt("comment_count"));
         }
 
         rs.close();

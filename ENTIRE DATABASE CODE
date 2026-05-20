@@ -115,11 +115,36 @@ CREATE TABLE resources (
     file_path VARCHAR(255) NOT NULL,
     file_type VARCHAR(255) NOT NULL,
     uploaded_by INT NOT NULL,
-    module_name VARCHAR(100),
+    category_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (uploaded_by) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (uploaded_by) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
 );
 
+---
+
+INSERT INTO resources (title, description, file_path, file_type, uploaded_by, category_id) 
+VALUES 
+    ('Introduction to Java Programming - Lecture Notes', 
+     'Complete lecture notes covering OOP concepts, Exception Handling, Collections and Multithreading.', 
+     'uploads/resources/java_lecture_notes.pdf', 
+     'PDF', 2, 8),
+
+    ('Database Management System - ER Diagram Examples', 
+     'Detailed ER diagrams with solutions for Hospital and University Management System.', 
+     'uploads/resources/dbms_er_diagrams.pdf', 
+     'PDF', 2, 8),
+
+    ('Machine Learning Fundamentals Slides', 
+     'PowerPoint slides covering Supervised Learning, Regression and Classification.', 
+     'uploads/resources/ml_fundamentals.pptx', 
+     'PPTX', 3, 11),
+
+    ('Computer Networks - OSI & TCP/IP Notes', 
+     'Comprehensive notes with diagrams on OSI layers and TCP/IP protocol.', 
+     'uploads/resources/computer_networks.pdf', 
+     'PDF', 2, 9);
+     
 ---
 
 CREATE TABLE petitions (
@@ -136,7 +161,8 @@ CREATE TABLE petitions (
 
 INSERT INTO petitions (title, content, created_by, is_approved) VALUES
 ('Extend Library Hours During Exam Week', 'Current library timing is insufficient during exams.', 3, TRUE),
-('Improve WiFi in Skill Block', 'WiFi connectivity is very poor in the Skill Block.', 3, TRUE);
+('Improve WiFi in Skill Block (floors 3 and 4)', 'WiFi connectivity is very poor in the Skill Block.', 3, TRUE),
+('Add More Menu Items to the College Canteen', 'The current item choices of the canteen is very limited.', 3, TRUE);
 
 ---
 
