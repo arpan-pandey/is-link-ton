@@ -11,7 +11,6 @@
             <a href="${pageContext.request.contextPath}/dashboard" class="nav-link" data-path="/dashboard">Home</a>
             <a href="${pageContext.request.contextPath}/threads" class="nav-link" data-path="/threads">Threads</a>
             <a href="${pageContext.request.contextPath}/petitions" class="nav-link" data-path="/petitions">Petitions</a>
-            <a href="${pageContext.request.contextPath}/groups" class="nav-link" data-path="/groups">Study Groups</a>
             <a href="${pageContext.request.contextPath}/resources" class="nav-link" data-path="/resources">Resources</a>
         </nav>
 

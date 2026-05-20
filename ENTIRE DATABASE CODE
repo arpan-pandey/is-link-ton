@@ -185,21 +185,3 @@ INSERT INTO petition_votes (petition_id, user_id) VALUES
 (2, 3);
 
 ---
-
-CREATE TABLE study_groups (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(150) NOT NULL,
-    description TEXT,
-    category_id INT,
-    whatsapp_link VARCHAR(255),
-    created_by INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
-    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
-);
-
----
-
-INSERT INTO study_groups (name, description, category_id, whatsapp_link, created_by) VALUES
-('CS301 Algorithm Study Group', 'Weekly discussions on DP and Graph problems', 12, 'https://chat.whatsapp.com/abc123', 2),
-('BBA Digital Marketing Group', 'Case studies and project help', 15, 'https://chat.whatsapp.com/xyz789', 3);
