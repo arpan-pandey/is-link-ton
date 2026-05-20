@@ -20,7 +20,7 @@
 			    <a href="${pageContext.request.contextPath}/profile" class="profile-link">
 			        <c:choose>
 			            <c:when test="${not empty user.profileImage}">
-			                <%-- 🛠️ Send "images/" prefix ahead of the dynamic profile name --%>
+			                <%-- send "images/" prefix ahead of the dynamic profile name --%>
 			                <img src="${pageContext.request.contextPath}/getfile?path=images/${user.profileImage}"
 			                     alt="Profile"
 			                     class="avatar"
