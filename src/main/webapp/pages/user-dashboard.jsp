@@ -129,19 +129,21 @@
 			    </div>
 			    
 			    <div class="resources-card-container">
-				   	<c:forEach var="resource" items="${recentResources}">
-				   		<div class="card resource-card">
-				   			<a class="resource-icon" href="#">${resource.fileType}</a>
-				   			<div class=resource-card-main>
-					   			<span class="resource-title">${resource.title}</span>
-					   			<div>
-					   				<span class="creator">By: ${resource.authorUserName}</span>
-					   				<span class="category-flair">${resource.categoryName}</span>
-					   			</div>
-				   			</div>
-				   		</div>
-				   	</c:forEach>
-				</div>
+			        <c:forEach var="resource" items="${recentResources}">
+			            <div class="card resource-card">
+			                <a class="resource-icon" href="${pageContext.request.contextPath}/getfile?path=${resource.filePath}">
+			                    <c:out value="${resource.fileType}"/>
+			                </a>
+			                <div class="resource-card-main">
+			                    <span class="resource-title"><c:out value="${resource.title}"/></span>
+			                    <div>
+			                        <span class="creator">By: <c:out value="${resource.authorUserName}"/></span>
+			                        <span class="category-flair"><c:out value="${resource.categoryName}"/></span>
+			                    </div>
+			                </div>
+			            </div>
+			        </c:forEach>
+			    </div>
 			</div>
 		</div>
 	</main>
