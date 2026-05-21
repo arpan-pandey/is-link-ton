@@ -13,19 +13,28 @@
 <body>
     <jsp:include page="/components/user-header.jsp" />
     
+    <%-- Success Message Notification --%>
+		<c:if test="${not empty sessionScope.message}">
+		    <div id="successBox" class="popup-message success-toast">
+		        <c:out value="${sessionScope.message}"/>
+		    </div>
+		    <c:remove var="message" scope="session" />
+		</c:if>
+		
+		<%-- Error Message Notification --%>
+		<c:if test="${not empty sessionScope.error}">
+		    <div id="errorBox" class="popup-message">
+		        <c:out value="${sessionScope.error}"/>
+		    </div>
+		    <c:remove var="error" scope="session" />
+		</c:if>
+    
     <main class="form-main-container">
         <div class="form-card">
             <div class="form-header">
                 <h2>Upload New Resource</h2>
                 <p>Upload helpful lecture sheets, reference materials, or assignment guidelines for your classes.</p>
             </div>
-            
-            <%-- error message --%>
-            <c:if test="${not empty error}">
-                <div class="alert alert-danger">
-                    <c:out value="${error}" />
-                </div>
-            </c:if>
 
             <form action="${pageContext.request.contextPath}/resources/upload" method="POST" enctype="multipart/form-data" class="academic-form">
                 
@@ -94,15 +103,6 @@
 </body>
 
 <script>
-    window.addEventListener("load", function () {
-        const errorBox = document.getElementById("errorBox");
-
-        if (errorBox) {
-            setTimeout(() => {
-                errorBox.classList.add("hide");
-            }, 3000); // visible for 3 seconds
-        }
-    });
 
     // shows file name
     function handleFileSelection() {

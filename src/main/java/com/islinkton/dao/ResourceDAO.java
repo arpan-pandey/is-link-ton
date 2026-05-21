@@ -141,4 +141,28 @@ public class ResourceDAO {
         con.close();
         return resource;
     }
+    
+    public boolean deleteResource(int resourceId, int userId, String userRole) throws Exception {
+        Connection con = DBconfig.getDbConnection();
+        
+        String sql;
+        if ("Admin".equalsIgnoreCase(userRole)) {
+            sql = "DELETE FROM resources WHERE id = ?";
+        } else if ("Faculty".equalsIgnoreCase(userRole)) {
+            sql = "DELETE FROM resources WHERE id = ? AND uploaded_by = ?";
+        } else {
+        	return false; // users cannot delete resource
+        }
+        
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setInt(1, resourceId);
+        if (!"Admin".equalsIgnoreCase(userRole)) {
+            pst.setInt(2, userId);
+        }
+        
+        int rows = pst.executeUpdate();
+        pst.close();
+        con.close();
+        return rows > 0;
+    }
 }

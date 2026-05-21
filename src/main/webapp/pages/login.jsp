@@ -12,9 +12,21 @@
 </head>
 <body class="center">
 
-	<c:if test="${not empty error}">
-        <div class="login-error-message" id="errorBox">${error}</div>
-    </c:if>
+	<%-- Success Message Notification --%>
+		<c:if test="${not empty message}">
+		    <div id="successBox" class="popup-message success-toast">
+		        <c:out value="${message}"/>
+		    </div>
+		    <c:remove var="message" scope="session" />
+		</c:if>
+		
+		<%-- Error Message Notification --%>
+		<c:if test="${not empty error}">
+		    <div id="errorBox" class="popup-message">
+		        <c:out value="${error}"/>
+		    </div>
+		    <c:remove var="error" scope="session" />
+		</c:if>
 
     <div class="login-container">
     
@@ -45,15 +57,23 @@
     </div>
 
 </body>
-<script>
-    window.addEventListener("load", function () {
-        const errorBox = document.getElementById("errorBox");
 
-        if (errorBox) {
-            setTimeout(() => {
-                errorBox.classList.add("hide");
-            }, 3000); // visible for 3 seconds
-        }
-    });
+<script>
+window.addEventListener("load", function () {
+    const errorBox = document.getElementById("errorBox");
+    const successBox = document.getElementById("successBox");
+
+    if (errorBox) {
+        setTimeout(() => {
+            errorBox.classList.add("hide");
+        }, 3000);
+    }
+
+    if (successBox) {
+        setTimeout(() => {
+            successBox.classList.add("hide");
+        }, 3000);
+    }
+});
 </script>
 </html>

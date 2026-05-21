@@ -16,12 +16,20 @@ import java.time.format.DateTimeFormatter;
 
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
+	
+	private UserDAO userDAO = new UserDAO();
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 	        throws ServletException, IOException {
 
 	    String email = request.getParameter("email");
 	    String password = request.getParameter("password");
+	    
+	    if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+            request.setAttribute("error", "Login Credentials cannot contain white spaces or empty definitions.");
+            request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
+            return;
+        }
 
 	    LoginService service = new LoginService();
 	    String status = service.login(email, password);
@@ -36,9 +44,6 @@ public class LoginController extends HttpServlet {
 	                request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
 	                return;
 	            }
-	            
-	            
-	            System.out.println(userData.getRole());
 
 	            // set Session
 	            SessionUtil.setAttribute(request, "user", userData, 3600);

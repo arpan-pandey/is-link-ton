@@ -149,11 +149,22 @@ public class ThreadDAO {
         return rows > 0;
     }
     
-    public boolean deleteThread(int threadId) throws Exception {
+    public boolean deleteThread(int threadId, int userId, String userRole) throws Exception {
         Connection con = DBconfig.getDbConnection();
-        String sql = "DELETE FROM threads WHERE id = ?";
+        
+        String sql;
+        if ("Admin".equalsIgnoreCase(userRole)) {
+            sql = "DELETE FROM threads WHERE id = ?";
+        } else {
+            sql = "DELETE FROM threads WHERE id = ? AND user_id = ?";
+        }
+        
         PreparedStatement pst = con.prepareStatement(sql);
         pst.setInt(1, threadId);
+        if (!"Admin".equalsIgnoreCase(userRole)) {
+            pst.setInt(2, userId);
+        }
+        
         int rows = pst.executeUpdate();
         pst.close();
         con.close();

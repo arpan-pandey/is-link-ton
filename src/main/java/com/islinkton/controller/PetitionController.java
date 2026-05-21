@@ -131,7 +131,7 @@ public class PetitionController extends HttpServlet {
             if (petitionIdStr != null && !petitionIdStr.trim().isEmpty()) {
                 try {
                     int petitionId = Integer.parseInt(petitionIdStr.trim());
-                    boolean success = petitionDAO.deletePetition(petitionId);
+                    boolean success = petitionDAO.deletePetition(petitionId, user.getRole());
 
                     if (success) {
                         session.setAttribute("message", "Petition deleted successfully.");

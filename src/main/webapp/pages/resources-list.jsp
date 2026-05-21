@@ -14,6 +14,22 @@
 <body>
 	<jsp:include page="/components/user-header.jsp" />
 	
+	<%-- Success Message Notification --%>
+		<c:if test="${not empty sessionScope.message}">
+		    <div id="successBox" class="popup-message success-toast">
+		        <c:out value="${sessionScope.message}"/>
+		    </div>
+		    <c:remove var="message" scope="session" />
+		</c:if>
+		
+		<%-- Error Message Notification --%>
+		<c:if test="${not empty sessionScope.error}">
+		    <div id="errorBox" class="popup-message">
+		        <c:out value="${sessionScope.error}"/>
+		    </div>
+		    <c:remove var="error" scope="session" />
+		</c:if>
+	
 	<main class="creation-container">
         
         <div class="creation-button-container">
@@ -29,22 +45,6 @@
 			</div>
 			</c:if>
 		</div>
-
-        <%-- Success Message Notification --%>
-		<c:if test="${not empty sessionScope.message}">
-		    <div id="successBox" class="popup-message success-toast">
-		        <c:out value="${sessionScope.message}"/>
-		    </div>
-		    <c:remove var="message" scope="session" />
-		</c:if>
-		
-		<%-- Error Message Notification --%>
-		<c:if test="${not empty sessionScope.error}">
-		    <div id="errorBox" class="popup-message">
-		        <c:out value="${sessionScope.error}"/>
-		    </div>
-		    <c:remove var="error" scope="session" />
-		</c:if>
         
         <div class="resources-card-container">
 	        <c:forEach var="resource" items="${resources}">
@@ -66,22 +66,4 @@
 	
 	<jsp:include page="/components/footer.jsp" />
 </body>
-<script>
-    window.addEventListener("load", function () {
-        const errorBox = document.getElementById("errorBox");
-        const successBox = document.getElementById("successBox");
-
-        if (errorBox) {
-            setTimeout(() => {
-                errorBox.classList.add("hide");
-            }, 3000);
-        }
-
-        if (successBox) {
-            setTimeout(() => {
-                successBox.classList.add("hide");
-            }, 3000);
-        }
-    });
-</script>
 </html>

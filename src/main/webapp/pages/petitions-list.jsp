@@ -14,6 +14,22 @@
 <body>
 	<jsp:include page="/components/user-header.jsp" />
 	
+	<%-- Success Message Notification --%>
+		<c:if test="${not empty sessionScope.message}">
+		    <div id="successBox" class="popup-message success-toast">
+		        <c:out value="${sessionScope.message}"/>
+		    </div>
+		    <c:remove var="message" scope="session" />
+		</c:if>
+		
+		<%-- Error Message Notification --%>
+		<c:if test="${not empty sessionScope.error}">
+		    <div id="errorBox" class="popup-message">
+		        <c:out value="${sessionScope.error}"/>
+		    </div>
+		    <c:remove var="error" scope="session" />
+		</c:if>
+	
 	<main class="creation-container">
 		<div class="creation-button-container">
 			<div>

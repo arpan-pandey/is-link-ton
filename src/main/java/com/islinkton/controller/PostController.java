@@ -67,7 +67,7 @@ public class PostController extends HttpServlet {
                 if (postIdStr != null) {
                     int postId = Integer.parseInt(postIdStr);
                     
-                    boolean success = postDAO.deletePost(postId);
+                    boolean success = postDAO.deletePost(postId, user.getId() ,user.getRole());
                     if (success) {
                         session.setAttribute("message", "Post deleted successfully.");
                     } else {

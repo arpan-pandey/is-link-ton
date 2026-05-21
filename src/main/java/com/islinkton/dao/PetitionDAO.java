@@ -104,7 +104,11 @@ public class PetitionDAO {
         return rows > 0;
     }
     
-    public boolean deletePetition(int petitionId) throws Exception {
+    public boolean deletePetition(int petitionId, String userRole) throws Exception {
+    	if (!"Admin".equalsIgnoreCase(userRole)) {
+            return false; // only Admins can delete petitions
+        }
+    	
         Connection con = DBconfig.getDbConnection();
         String sql = "DELETE FROM petitions WHERE id = ?";
         PreparedStatement pst = con.prepareStatement(sql);

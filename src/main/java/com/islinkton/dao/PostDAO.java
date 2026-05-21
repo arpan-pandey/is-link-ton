@@ -83,11 +83,22 @@ public class PostDAO {
         return rootComments; // returns only main nodes, containing their time-sorted array replies
     }
 
-    public boolean deletePost(int id) throws Exception {
+    public boolean deletePost(int postId, int userId, String userRole) throws Exception {
         Connection con = DBconfig.getDbConnection();
-        String sql = "DELETE FROM posts WHERE id=?";
+        
+        String sql;
+        if ("Admin".equalsIgnoreCase(userRole)) {
+            sql = "DELETE FROM posts WHERE id = ?";
+        } else {
+            sql = "DELETE FROM posts WHERE id = ? AND user_id = ?";
+        }
+        
         PreparedStatement pst = con.prepareStatement(sql);
-        pst.setInt(1, id);
+        pst.setInt(1, postId);
+        if (!"Admin".equalsIgnoreCase(userRole)) {
+            pst.setInt(2, userId);
+        }
+        
         int rows = pst.executeUpdate();
         pst.close();
         con.close();

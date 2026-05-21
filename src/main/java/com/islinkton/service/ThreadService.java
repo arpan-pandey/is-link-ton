@@ -24,7 +24,7 @@ public class ThreadService {
         return threadDAO.approveThread(threadId);
     }
 
-    public boolean deleteThread(int threadId) throws Exception {
-        return threadDAO.deleteThread(threadId);
+    public boolean deleteThread(int threadId, int userId, String userRole) throws Exception {
+        return threadDAO.deleteThread(threadId, userId, userRole);
     }
 }

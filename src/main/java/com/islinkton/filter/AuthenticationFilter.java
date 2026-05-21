@@ -61,9 +61,12 @@ public class AuthenticationFilter implements Filter {
         User user = (User) session.getAttribute("user");
 
         // admin-only pages
-        if (uri.contains("/admin") && !"admin".equalsIgnoreCase(user.getRole())) {
-            resp.sendRedirect(req.getContextPath() + "/login");
-            return;
+        if (path.startsWith("/admin") || path.contains("/admin-dashboard")) {
+            if (!"Admin".equalsIgnoreCase(user.getRole())) {
+                session.setAttribute("error", "Access Denied: You do not possess Administrative Privileges.");
+                resp.sendRedirect(contextPath + "/home");
+                return;
+            }
         }
 
         chain.doFilter(request, response);

@@ -1,11 +1,16 @@
 package com.islinkton.controller;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.islinkton.dao.CategoryDAO;
+import com.islinkton.dao.ResourceDAO;
 import com.islinkton.model.Category;
 import com.islinkton.model.Resource;
 import com.islinkton.model.User;
 import com.islinkton.service.ResourceService;
 import com.islinkton.utils.FileUploadUtil;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,8 +19,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
-import java.io.IOException;
-import java.util.List;
 
 @WebServlet("/resources/*")
 @MultipartConfig(maxFileSize = 50 * 1024 * 1024)
@@ -23,6 +26,7 @@ public class ResourceController extends HttpServlet {
 
     private ResourceService resourceService = new ResourceService();
     private CategoryDAO categoryDAO = new CategoryDAO();
+    private ResourceDAO resourceDAO = new ResourceDAO();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -67,19 +71,21 @@ public class ResourceController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         String pathInfo = request.getPathInfo();
 
-        if (user == null || !"Faculty".equalsIgnoreCase(user.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
-
         if (pathInfo != null && pathInfo.equals("/upload")) {
+        	
+        	if (!"Faculty".equalsIgnoreCase(user.getRole())) {
+                session.setAttribute("error", "Unauthorized action execution attempt.");
+                response.sendRedirect(request.getContextPath() + "/resources");
+                return;
+            }
+        	
             String title = request.getParameter("title");
             String description = request.getParameter("description");
             String categoryIdStr = request.getParameter("categoryId");
 
             if (title == null || title.trim().isEmpty() || categoryIdStr == null || categoryIdStr.trim().isEmpty()) {
                 try {
-                    request.setAttribute("error", "All fields are required.");
+                    request.setAttribute("error", "All fields are strictly required.");
                     List<Category> resourceCategories = categoryDAO.getCategoriesByType("Resource");
                     request.setAttribute("categories", resourceCategories);
                     request.getRequestDispatcher("/pages/upload-resource.jsp").forward(request, response);
@@ -100,13 +106,6 @@ public class ResourceController extends HttpServlet {
                 }
 
                 String fileName = FileUploadUtil.uploadResourceFile(filePart);
-                if (fileName == null) {
-                    request.setAttribute("error", "System failed to process resource file upload.");
-                    List<Category> resourceCategories = categoryDAO.getCategoriesByType("Resource");
-                    request.setAttribute("categories", resourceCategories);
-                    request.getRequestDispatcher("/pages/upload-resource.jsp").forward(request, response);
-                    return;
-                }
 
                 String fileExtension = getFileExtension(fileName);
 
@@ -134,10 +133,23 @@ public class ResourceController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/resources");
             return;
         }
+        
+        if (pathInfo != null && pathInfo.startsWith("/delete")) {
+            try {
+                int id = Integer.parseInt(request.getParameter("id"));
+                if (resourceDAO.deleteResource(id, user.getId(), user.getRole())) {
+                    session.setAttribute("message", "Resource data dropped from tracking node.");
+                } else {
+                    session.setAttribute("error", "Operation Denied: Authorization mismatch or missing token.");
+                }
+            } catch (Exception e) {
+                session.setAttribute("error", "Invalid structural payload context.");
+            }
+            response.sendRedirect(request.getContextPath() + "/resources");
+        }
 
-        response.sendRedirect(request.getContextPath() + "/resources");
     }
-
+    
     private String getFileExtension(String fileName) {
         if (fileName == null || !fileName.contains(".")) {
             return "UNKNOWN";
