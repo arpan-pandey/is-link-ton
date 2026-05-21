@@ -19,32 +19,33 @@ import java.util.List;
 public class PetitionController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final PetitionDAO petitionDAO = new PetitionDAO();
+    private final CategoryDAO categoryDAO = new CategoryDAO(); // Added to safely feed form views
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String pathInfo = request.getPathInfo(); // e.g., /petitions/create, /petitions/
+        String pathInfo = request.getPathInfo();
 
         try {
             if (pathInfo == null || pathInfo.equals("/")) {
-                // list all approved petitions in /petitions
+                // list all approved petitions
                 List<Petition> petitions = petitionDAO.getAllApprovedPetitions();
                 request.setAttribute("petitions", petitions);
                 request.getRequestDispatcher("/pages/petitions-list.jsp").forward(request, response);
 
             } else if (pathInfo.equals("/create")) {
-            	CategoryDAO categoryDAO = new CategoryDAO();
-            	List<Category> threadCategories = categoryDAO.getCategoriesByType("Petition");
-            	request.setAttribute("categories", threadCategories);
-            	
+                // show creation form
+                List<Category> petitionCategories = categoryDAO.getCategoriesByType("Petition");
+                request.setAttribute("categories", petitionCategories);
                 request.getRequestDispatcher("/pages/create-petition.jsp").forward(request, response);
+                
             } else {
                 response.sendRedirect(request.getContextPath() + "/petitions");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "Error loading petitions: " + e.getMessage());
+            request.setAttribute("error", "Error loading petitions dashboard: " + e.getMessage());
             request.getRequestDispatcher("/pages/petitions-list.jsp").forward(request, response);
         }
     }
@@ -53,60 +54,84 @@ public class PetitionController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-    	HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         String pathInfo = request.getPathInfo();
 
+        // Global Security Guard
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        // creation
         if (pathInfo != null && pathInfo.equals("/create")) {
             String title = request.getParameter("title");
             String content = request.getParameter("content");
+            String categoryIdStr = request.getParameter("categoryId");
 
-        // Null and empty checking validations
-        if (title == null || title.trim().isEmpty()) {
-            request.setAttribute("error", "Petition title is required");
-            request.getRequestDispatcher("/pages/create-petition.jsp").forward(request, response);
-            return;
-        }
-        if (content == null || content.trim().isEmpty()) {
-            request.setAttribute("error", "Petition content is required");
-            request.getRequestDispatcher("/pages/create-petition.jsp").forward(request, response);
-            return;
-        }
-
-        try {
-            // using constructor
-            Petition petition = new Petition(title.trim(), content.trim(), user.getUsername());
-            boolean success = petitionDAO.createPetition(petition);
-
-            if (success) {
-                session.setAttribute("message", "Petition submitted successfully!");
-            } else {
-                session.setAttribute("error", "Failed to submit petition.");
+            // server-side validation
+            if (title == null || title.trim().isEmpty() || 
+                content == null || content.trim().isEmpty() || 
+                categoryIdStr == null || categoryIdStr.trim().isEmpty()) {
+                
+                try {
+                    request.setAttribute("error", "All fields are strictly required.");
+                    List<Category> petitionCategories = categoryDAO.getCategoriesByType("Petition");
+                    request.setAttribute("categories", petitionCategories);
+                    request.getRequestDispatcher("/pages/create-petition.jsp").forward(request, response);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.setAttribute("error", "System error: " + e.getMessage());
+
+            try {
+                int categoryId = Integer.parseInt(categoryIdStr.trim());
+
+                // Uses your target Model constructor signature perfectly
+                Petition petition = new Petition(
+                    title.trim(),
+                    content.trim(),
+                    user.getId(),
+                    categoryId
+                );
+
+                boolean success = petitionDAO.createPetition(petition);
+
+                if (success) {
+                    session.setAttribute("message", "Petition submitted successfully! Pending approval.");
+                } else {
+                    session.setAttribute("error", "Database failed to persist submission.");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                session.setAttribute("error", "System error: " + e.getMessage());
+            }
+
+            // Post-Redirect-Get pattern safely points back to lists framework mapping
+            response.sendRedirect(request.getContextPath() + "/petitions");
+            return;
         }
 
-        response.sendRedirect(request.getContextPath() + "/petitions");
-        return;
-    }
-
+        // delete
         if (pathInfo != null && pathInfo.equals("/delete")) {
             String petitionIdStr = request.getParameter("petitionId");
 
             if (petitionIdStr != null && !petitionIdStr.trim().isEmpty()) {
                 try {
                     int petitionId = Integer.parseInt(petitionIdStr.trim());
-                    
                     boolean success = petitionDAO.deletePetition(petitionId);
-                    
+
                     if (success) {
-                        session.setAttribute("message", "Petition removed successfully.");
+                        session.setAttribute("message", "Petition deleted successfully.");
+                    } else {
+                        session.setAttribute("error", "Could not locate target petition records.");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    session.setAttribute("error", "Failed to delete petition.");
+                    session.setAttribute("error", "System failed to process deletion parameter processing.");
                 }
             }
             response.sendRedirect(request.getContextPath() + "/petitions");

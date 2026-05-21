@@ -7,8 +7,11 @@ public class Petition {
 
 	private int id;
     private String title;
-    private String content;      
-    private String creatorUsername;
+    private String content;     
+    private int creatorId;
+    private String creatorUserName;
+    private int categoryId;
+    private String categoryName;
     private boolean isApproved;
     private int voteCount;
     private LocalDateTime createdAt;
@@ -17,10 +20,11 @@ public class Petition {
     public Petition() {}
 
     // constructor with important fields
-    public Petition(String title, String content, String creatorUsername) {
+    public Petition(String title, String content, int creatorId, int categoryId) {
         this.title = title;
         this.content = content;
-        this.creatorUsername = creatorUsername;
+        this.creatorId = creatorId;
+        this.categoryId = categoryId;
     }
 
     public int getId() { return id; }
@@ -32,8 +36,17 @@ public class Petition {
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
     
-    public String getCreatorUsername() { return creatorUsername; }
-    public void setCreatorUsername(String creatorUsername) { this.creatorUsername = creatorUsername; }
+    public int getCreatorId() { return creatorId; }
+    public void setCreatorId(int creatorId) { this.creatorId = creatorId; }
+    
+    public String getCreatorUserName() { return creatorUserName; }
+    public void setCreatorUserName(String creatorUserName) { this.creatorUserName = creatorUserName; }
+    
+    public int getCategoryId() { return categoryId; }
+    public void setCategoryId(int categoryId) { this.categoryId = categoryId; }
+    
+    public String getCategoryName() { return categoryName; }
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
     
     public boolean isApproved() { return isApproved; }
     public void setApproved(boolean approved) { isApproved = approved; }

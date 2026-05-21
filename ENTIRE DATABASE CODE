@@ -154,17 +154,19 @@ CREATE TABLE petitions (
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     created_by INT NOT NULL,
+    category_id INT NOT NULL,
     is_approved BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
 );
 
 ---
 
 INSERT INTO petitions (title, content, created_by, is_approved) VALUES
-('Extend Library Hours During Exam Week', 'Current library timing is insufficient during exams.', 3, TRUE),
-('Improve WiFi in Skill Block (floors 3 and 4)', 'WiFi connectivity is very poor in the Skill Block.', 3, TRUE),
-('Add More Menu Items to the College Canteen', 'The current item choices of the canteen is very limited.', 3, TRUE);
+('Extend Library Hours During Exam Week', 'Current library timing is insufficient during exams.', 3, 5, TRUE),
+('Improve WiFi in Skill Block (floors 3 and 4)', 'WiFi connectivity is very poor in the Skill Block.', 3, 5,  TRUE),
+('Add More Menu Items to the College Canteen', 'The current item choices of the canteen is very limited.', 3, 7,  TRUE);
 
 ---
 

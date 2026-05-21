@@ -33,7 +33,7 @@
 					<div class="card petition-card">
 						<div class="petition-main">
 							<div class="petition-details">
-								<span class="category-flair">Academic Policy</span>
+								<span class="category-flair"><c:out value="${petition.categoryName}"/></span>
 								<span class="petition-time-info"><c:out value="${petition.timeAgo}" /></span>
 							</div>
 							<div class="petition-content">
@@ -47,7 +47,7 @@
 							</div>
 						</div>
 						<div class="petition-interaction">
-							<span class="petition-creator-info">By: @<c:out value="${petition.creatorUsername}" /></span>
+							<span class="petition-creator-info">By: @<c:out value="${petition.creatorUserName}" /></span>
 							<a class="petition-vote-button" href="${pageContext.request.contextPath}/petitions/vote?id=${petition.id}">Vote</a>							
 						</div>
 					</div>

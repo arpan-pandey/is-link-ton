@@ -301,75 +301,95 @@ a {
 
 /* Petitions */
 
-
-.petition-card-container{
-	display: flex;
-	gap: 0.5rem;
+.petition-card-container {
+    display: flex;
+    flex-wrap: wrap; /* 🎯 Allows cards to drop to a new line once 3 cards fill a row */
+    gap: 1.5rem;    /* Generates whitespace between the cards */
+    width: 100%;
 }
 
-.petition-card{
-	display: flex;
-	flex-direction: column;
-	padding: 0;
-	gap: 1.2rem;
-	flex: 1;
-	flex-wrap: wrap;
-	min-width: 30%;
+.petition-card {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    background: white;
+    border: 1px solid #c4c6cd;
+    
+    /* * 📐 The Math: 33.333% creates 3 columns. 
+     * We subtract 1rem to perfectly account for the flex gaps so items don't push early.
+     */
+    flex: 0 0 calc(33.333% - 1rem); 
+    min-width: 280px; /* Prevents cards from getting excessively squished */
 }
 
-.petition-main{
-	display: flex;
-	flex: 1;
-	padding: 1rem 1.5rem;
-	padding-bottom: 0rem;
-	flex-direction: column;
-	gap: 1rem;
+.petition-main {
+    display: flex;
+    flex: 1;
+    padding: 1rem 1.5rem;
+    padding-bottom: 0rem;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-.petition-details{
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	font-size: 13px;
+.petition-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
 }
 
-.petition-content{
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
+.petition-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
 }
 
-.petition-title{
-	font-size: 17px;
-	font-weight: bold;
+.petition-title {
+    font-size: 17px;
+    font-weight: bold;
 }
 
-.petition-body{
-	color: #74767d;
+.petition-body {
+    color: #74767d;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Keeps text inside cards vertically uniform at 3 lines max */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5;
 }
 
-.petition-interaction{
-	font-size: 13px;
-	background: #F8F9FA;
-	border-top: 1px solid #c4c6cd;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 0.7rem 1.5rem;
+.petition-votes {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: auto; /* Pushes the vote count to the bottom of the white main section */
+    padding-bottom: 0.5rem;
 }
 
-.petition-vote-button{
-	border: 1px solid #162839;
-	color: #162839;
-	background: #F8F9FA;
-	padding: 4px 1rem;
-	transition: all 0.3s ease;
-	font-weight: bold;
-	
-	&:hover{
-		background: #162839;
-		color: #F8F9FA;
-	}
+.petition-interaction {
+    font-size: 13px;
+    background: #F8F9FA;
+    border-top: 1px solid #c4c6cd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.7rem 1.5rem;
+    margin-top: auto; /* Aligns the grey footer bar across cards with varying content sizes */
+}
+
+.petition-vote-button {
+    border: 1px solid #162839;
+    color: #162839;
+    background: #F8F9FA;
+    padding: 4px 1rem;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    
+    &:hover {
+        background: #162839;
+        color: #F8F9FA;
+    }
 }
 
 /* Resources */

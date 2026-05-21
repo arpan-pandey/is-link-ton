@@ -11,12 +11,13 @@ public class PetitionDAO {
 
     public boolean createPetition(Petition petition) throws Exception {
         Connection con = DBconfig.getDbConnection();
-        String sql = "INSERT INTO petitions (title, content, created_by) VALUES (?, ?, ?)";
-        PreparedStatement pst = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        String sql = "INSERT INTO petitions (title, content, created_by, category_id) VALUES (?, ?, ?, ?)";
+        PreparedStatement pst = con.prepareStatement(sql);
         
         pst.setString(1, petition.getTitle());
         pst.setString(2, petition.getContent());
-        pst.setString(3, petition.getCreatorUsername());
+        pst.setInt(3, petition.getCreatorId());
+        pst.setInt(4, petition.getCategoryId());
 
         int rows = pst.executeUpdate();
         pst.close();
@@ -28,11 +29,12 @@ public class PetitionDAO {
         List<Petition> petitions = new ArrayList<>();
         Connection con = DBconfig.getDbConnection();
         
-        String sql = " SELECT p.*, u.username as creator_username " 
+        String sql = "SELECT p.*, u.username as creator_username, c.name as category_name " 
             + "FROM petitions p "
-            + "JOIN users u ON p.created_by = u.id " 
+            + "JOIN users u ON p.created_by = u.id "
+            + "JOIN categories c ON p.category_id = c.id "
             + "WHERE p.is_approved = TRUE "
-            + "ORDER BY p.created_at DESC ";
+            + "ORDER BY p.created_at DESC";
         
         PreparedStatement pst = con.prepareStatement(sql);
         ResultSet rs = pst.executeQuery();
@@ -42,7 +44,9 @@ public class PetitionDAO {
             p.setId(rs.getInt("id"));
             p.setTitle(rs.getString("title"));
             p.setContent(rs.getString("content"));
-            p.setCreatorUsername(rs.getString("creator_username"));
+            // Fixed naming case mapping to match exactly with Model specification definitions
+            p.setCreatorUserName(rs.getString("creator_username"));
+            p.setCategoryName(rs.getString("category_name"));
             p.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
             petitions.add(p);
         }
@@ -58,12 +62,14 @@ public class PetitionDAO {
         Connection con = DBconfig.getDbConnection();
         
         String sql = "SELECT p.id, p.title, p.content, p.created_at, " +
-	                "COALESCE(u.username, 'Deleted User') AS creator_username, " +
-	                "(SELECT COUNT(*) FROM petition_votes pv WHERE pv.petition_id = p.id) AS vote_count " +
-	                "FROM petitions p " +
-	                "LEFT JOIN users u ON p.created_by = u.id " +
-	                "WHERE p.is_approved = TRUE " +
-	                "ORDER BY p.created_at DESC LIMIT 3";
+                    "u.username AS creator_username, " +
+                    "c.name AS category_name, " +
+                    "(SELECT COUNT(*) FROM petition_votes pv WHERE pv.petition_id = p.id) AS vote_count " +
+                    "FROM petitions p " +
+                    "LEFT JOIN users u ON p.created_by = u.id " +
+                    "LEFT JOIN categories c ON p.category_id = c.id " +
+                    "WHERE p.is_approved = TRUE " +
+                    "ORDER BY p.created_at DESC LIMIT 3";
         
         PreparedStatement pst = con.prepareStatement(sql);
         ResultSet rs = pst.executeQuery();
@@ -74,7 +80,8 @@ public class PetitionDAO {
             p.setTitle(rs.getString("title"));
             p.setContent(rs.getString("content"));
             p.setCreatedAt(rs.getObject("created_at", LocalDateTime.class)); 
-            p.setCreatorUsername(rs.getString("creator_username"));
+            p.setCreatorUserName(rs.getString("creator_username"));
+            p.setCategoryName(rs.getString("category_name"));
             p.setVoteCount(rs.getInt("vote_count"));
             petitions.add(p);
         }

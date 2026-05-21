@@ -20,7 +20,8 @@ public class AuthenticationFilter implements Filter {
         
         
         // public pages - allowed access
-        if (path.equals("/home") ||
+        if (path.equals("/") ||
+        	path.equals("/home") ||
 	        path.equals("/login") ||
 	        path.equals("/register") ||
 	        path.equals("/about") ||
