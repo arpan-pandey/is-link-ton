@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
     
 <!DOCTYPE html>
 <html>
@@ -39,7 +40,12 @@
 			</div>
 			<div class="thread-interaction-container">
 				<div>
-					<a href="${pageContext.request.contextPath}/threads/vote?id=${thread.id}" class="thread-vote-button">🠅</a>
+					<c:set var="hasVotedThread" value="${not empty votedThreadIds && fn:contains(votedThreadIds, thread.id)}" />
+
+					<form action="${pageContext.request.contextPath}/vote/thread" method="POST" style="margin: 0; display: inline;">
+					    <input type="hidden" name="id" value="${thread.id}" />
+					    <button type="submit" class="thread-vote-button ${hasVotedThread ? 'active-voted' : ''}">⮝</button>
+					</form>
 					<span class="vote-count"><c:out value="${thread.voteCount}" /> votes</span>
 					<span class="interaction-divider">｜</span>
 					<span>Comments: <c:out value="${thread.commentCount}" /></span>

@@ -29,7 +29,8 @@ public class PetitionDAO {
         List<Petition> petitions = new ArrayList<>();
         Connection con = DBconfig.getDbConnection();
         
-        String sql = "SELECT p.*, u.username as creator_username, c.name as category_name " 
+        String sql = "SELECT p.*, u.username as creator_username, c.name as category_name, "
+            + "(SELECT COUNT(*) FROM petition_votes pv WHERE pv.petition_id = p.id) AS vote_count "
             + "FROM petitions p "
             + "JOIN users u ON p.created_by = u.id "
             + "JOIN categories c ON p.category_id = c.id "
@@ -44,10 +45,10 @@ public class PetitionDAO {
             p.setId(rs.getInt("id"));
             p.setTitle(rs.getString("title"));
             p.setContent(rs.getString("content"));
-            // Fixed naming case mapping to match exactly with Model specification definitions
             p.setCreatorUserName(rs.getString("creator_username"));
             p.setCategoryName(rs.getString("category_name"));
             p.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
+            p.setVoteCount(rs.getInt("vote_count"));
             petitions.add(p);
         }
 

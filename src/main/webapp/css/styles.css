@@ -392,6 +392,63 @@ a {
     }
 }
 
+/* ACTIVE VOTE STYLING */
+
+/* complete reset for button forms so they style uniformly */
+.thread-vote-button,
+.petition-vote-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-block;
+}
+
+/* thread arrow rule */
+.thread-vote-button {
+    font-size: 1.5rem;
+    font-weight: bold;
+    transition: color 0.3s ease;
+    color: #162839;
+}
+.thread-vote-button:hover {
+    color: green;
+}
+.thread-vote-button.active-voted {
+    color: green !important;
+}
+
+/* Base/Default Petition button style (when NOT voted) */
+.petition-vote-button {
+    border: 1px solid #162839;
+    color: #162839;
+    background: #F8F9FA;
+    padding: 4px 1rem;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-align: center;
+}
+
+.petition-vote-button:hover {
+    background: #162839;
+    color: #F8F9FA;
+}
+
+/* Active Voted Petition button style */
+.petition-vote-button.voted-state {
+    background: #162839 !important;
+    color: #F8F9FA !important;
+    border: 1px solid #162839 !important;
+}
+
+/* hover effect when it is already in a voted state */
+.petition-vote-button.voted-state:hover {
+    background: #F8F9FA !important;
+    color: #162839 !important;
+    border: 1px solid #162839 !important;
+}
+
 /* Resources */
 
 .resources-card-container{

@@ -2,6 +2,7 @@ package com.islinkton.controller;
 
 import com.islinkton.dao.CategoryDAO;
 import com.islinkton.dao.PetitionDAO;
+import com.islinkton.dao.VoteDAO;
 import com.islinkton.model.Category;
 import com.islinkton.model.Petition;
 import com.islinkton.model.User;
@@ -19,7 +20,8 @@ import java.util.List;
 public class PetitionController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final PetitionDAO petitionDAO = new PetitionDAO();
-    private final CategoryDAO categoryDAO = new CategoryDAO(); // Added to safely feed form views
+    private final CategoryDAO categoryDAO = new CategoryDAO();
+    private final VoteDAO voteDAO = new VoteDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -32,6 +34,13 @@ public class PetitionController extends HttpServlet {
                 // list all approved petitions
                 List<Petition> petitions = petitionDAO.getAllApprovedPetitions();
                 request.setAttribute("petitions", petitions);
+                
+                HttpSession session = request.getSession();
+                User user = (User) session.getAttribute("user");
+                if (user != null) {
+                    request.setAttribute("votedPetitionIds", voteDAO.getUserVotedPetitionIds(user.getId()));
+                }
+                
                 request.getRequestDispatcher("/pages/petitions-list.jsp").forward(request, response);
 
             } else if (pathInfo.equals("/create")) {

@@ -37,13 +37,17 @@
 					</div>
 					<div class="threads-card-container">
 						<c:forEach var="thread" items="${recentThreads}">
+							<c:set var="hasVotedThread" value="${not empty votedThreadIds && fn:contains(votedThreadIds, thread.id)}" />
 							<div class="card thread-card">
 								<aside class="vote-thread-container">
-									<div>
-										<a href="${pageContext.request.contextPath}/threads/vote?id=${thread.id}" class="thread-vote-button">⮝</a>
-										<span class="vote-count"><c:out value="${thread.voteCount}" /></span>
-									</div>
-								</aside>
+					                <div>
+					                    <form action="${pageContext.request.contextPath}/vote/thread" method="POST" style="margin: 0; display: inline;">
+								            <input type="hidden" name="id" value="${thread.id}" />
+								            <button type="submit" class="thread-vote-button ${hasVotedThread ? 'active-voted' : ''}">⮝</button>
+								        </form>
+					                    <span class="vote-count"><c:out value="${thread.voteCount}" /></span>
+					                </div>
+					            </aside>
 								<div class="thread-main">
 									<div class="thread-details">
 										<div>
@@ -80,6 +84,8 @@
 					</div>
 					<div class="petition-card-container">
 						<c:forEach var="petition" items="${recentPetitions}">
+							<c:set var="hasVotedPetition" value="${not empty votedPetitionIds && fn:contains(votedPetitionIds, petition.id)}" />
+							
 							<div class="card petition-card" style="min-width: 270px;"> <!-- updated minimum width to take smaller div size in consideration -->
 								<div class="petition-main">
 									<div class="petition-details">
@@ -87,10 +93,8 @@
 										<span class="petition-time-info"><c:out value="${petition.timeAgo}" /></span>
 									</div>
 									<div class="petition-content">
-										<span class="petition-title">
-											<a href="${pageContext.request.contextPath}/petitions/view?id=${petition.id}">
+										<span class="petition-title">	
 												<c:out value="${petition.title}" />
-											</a>
 										</span>
 										<span class="petition-body"><c:out value="${petition.content}" /></span>
 										<span class="petition-votes">Votes: <c:out value="${petition.voteCount}" /></span>	
@@ -98,7 +102,15 @@
 								</div>
 								<div class="petition-interaction">
 									<span class="petition-creator-info">By: @<c:out value="${petition.creatorUserName}" /></span>
-									<a class="petition-vote-button" href="${pageContext.request.contextPath}/petitions/vote?id=${petition.id}">Vote</a>							
+									<form action="${pageContext.request.contextPath}/vote/petition" method="POST" style="margin: 0; display: inline-block;">
+						                <input type="hidden" name="id" value="${petition.id}" />
+						                <button type="submit" class="petition-vote-button ${hasVotedPetition ? 'voted-state' : ''}">
+						                    <c:choose>
+						                        <c:when test="${hasVotedPetition}">Voted</c:when>
+						                        <c:otherwise>Vote</c:otherwise>
+						                    </c:choose>
+						                </button>
+						            </form>							
 								</div>
 							</div>
 						</c:forEach>

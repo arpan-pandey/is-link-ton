@@ -7,6 +7,8 @@ import com.islinkton.model.Post;
 import com.islinkton.service.ThreadService;
 import com.islinkton.dao.CategoryDAO;
 import com.islinkton.dao.PostDAO;
+import com.islinkton.dao.VoteDAO;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -20,6 +22,7 @@ import java.util.List;
 public class ThreadController extends HttpServlet {
 
     private ThreadService threadService = new ThreadService();
+    private final VoteDAO voteDAO = new VoteDAO();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -32,7 +35,15 @@ public class ThreadController extends HttpServlet {
             	// list all threads in /threads
                 List<Thread> threads = threadService.getAllApprovedThreads();
                 request.setAttribute("threads", threads);
+                
+                HttpSession session = request.getSession();
+                User user = (User) session.getAttribute("user");
+                if (user != null) {
+                    request.setAttribute("votedThreadIds", voteDAO.getUserVotedThreadIds(user.getId()));
+                }
+                
                 request.getRequestDispatcher("/pages/threads-list.jsp").forward(request, response);
+                
 
             } else if (pathInfo.equals("/create")) {
                 
@@ -56,6 +67,12 @@ public class ThreadController extends HttpServlet {
                     PostDAO postDAO = new PostDAO();
                     List<Post> posts = postDAO.getPostsByThread(id);
                     request.setAttribute("posts", posts);
+                    
+                    HttpSession session = request.getSession();
+                    User user = (User) session.getAttribute("user");
+                    if (user != null) {
+                        request.setAttribute("votedThreadIds", voteDAO.getUserVotedThreadIds(user.getId()));
+                    }
                     
                     request.getRequestDispatcher("/pages/view-thread.jsp").forward(request, response);
                 } else {
