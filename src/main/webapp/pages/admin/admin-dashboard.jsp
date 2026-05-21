@@ -115,7 +115,6 @@
                             <th>Title</th>
                             <th>Category</th>
                             <th>Author</th>
-                            <th>Approval Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -135,13 +134,24 @@
                                 <td>
                                     <div class="action-button-group">
                                         <c:choose>
-                                        <c:when test="${p.approved}">
-                                            <span class="badge badge-success">Approved</span>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <span class="badge badge-warning">Pending Approval</span>
-                                        </c:otherwise>
-                                    </c:choose>
+                                            <c:when test="${not p.isApproved}">
+                                                <form action="${pageContext.request.contextPath}/admin/dashboard" method="POST" class="inline-form">
+                                                    <input type="hidden" name="targetType" value="petition">
+                                                    <input type="hidden" name="action" value="approve">
+                                                    <input type="hidden" name="id" value="${p.id}">
+                                                    <button type="submit" class="action-btn btn-approve">Approve</button>
+                                                </form>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <form action="${pageContext.request.contextPath}/admin/dashboard" method="POST" class="inline-form" 
+                                                      onsubmit="return confirm('Purge petition records permanently? This cannot be undone.');">
+                                                    <input type="hidden" name="targetType" value="petition">
+                                                    <input type="hidden" name="action" value="delete">
+                                                    <input type="hidden" name="id" value="${p.id}">
+                                                    <button type="submit" class="action-btn btn-reject">Delete Petition</button>
+                                                </form>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                 </td>
                             </tr>
@@ -154,6 +164,7 @@
                     </tbody>
                 </table>
             </div>
+        </div>
         </div>
 
     </main>

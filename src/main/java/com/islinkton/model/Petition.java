@@ -48,7 +48,7 @@ public class Petition {
     public String getCategoryName() { return categoryName; }
     public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
     
-    public boolean isApproved() { return isApproved; }
+    public boolean getisApproved() { return isApproved; }
     public void setApproved(boolean approved) { isApproved = approved; }
     
     public int getVoteCount() { return voteCount; }

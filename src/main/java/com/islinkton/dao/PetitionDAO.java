@@ -81,6 +81,7 @@ public class PetitionDAO {
             p.setCategoryName(rs.getString("category_name"));
             p.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
             p.setVoteCount(rs.getInt("vote_count"));
+            p.setApproved(rs.getBoolean("is_approved"));
             petitions.add(p);
         }
 
