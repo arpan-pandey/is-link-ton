@@ -80,7 +80,7 @@
 					</div>
 					<div class="petition-card-container">
 						<c:forEach var="petition" items="${recentPetitions}">
-							<div class="card petition-card">
+							<div class="card petition-card" style="min-width: 270px;"> <!-- updated minimum width to take smaller div size in consideration -->
 								<div class="petition-main">
 									<div class="petition-details">
 										<span class="category-flair"><c:out value="${petition.categoryName}"/></span>

@@ -303,8 +303,8 @@ a {
 
 .petition-card-container {
     display: flex;
-    flex-wrap: wrap; /* 🎯 Allows cards to drop to a new line once 3 cards fill a row */
-    gap: 1.5rem;    /* Generates whitespace between the cards */
+    flex-wrap: wrap; /*  Allows cards to drop to a new line once 3 cards fill a row */
+    gap: 1.5rem;
     width: 100%;
 }
 
@@ -315,7 +315,7 @@ a {
     background: white;
     border: 1px solid #c4c6cd;
     
-    /* * 📐 The Math: 33.333% creates 3 columns. 
+    /* * 33.333% creates 3 columns. 
      * We subtract 1rem to perfectly account for the flex gaps so items don't push early.
      */
     flex: 0 0 calc(33.333% - 1rem); 
