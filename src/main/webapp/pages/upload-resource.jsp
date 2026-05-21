@@ -14,17 +14,17 @@
     <jsp:include page="/components/user-header.jsp" />
     
     <%-- Success Message Notification --%>
-		<c:if test="${not empty sessionScope.message}">
+		<c:if test="${not empty message}">
 		    <div id="successBox" class="popup-message success-toast">
-		        <c:out value="${sessionScope.message}"/>
+		        <c:out value="${message}"/>
 		    </div>
 		    <c:remove var="message" scope="session" />
 		</c:if>
 		
 		<%-- Error Message Notification --%>
-		<c:if test="${not empty sessionScope.error}">
+		<c:if test="${not empty error}">
 		    <div id="errorBox" class="popup-message">
-		        <c:out value="${sessionScope.error}"/>
+		        <c:out value="${error}"/>
 		    </div>
 		    <c:remove var="error" scope="session" />
 		</c:if>
@@ -44,7 +44,6 @@
                         type="text" 
                         id="resourceTitle" 
                         name="title" 
-                        required 
                         placeholder="e.g., 'Advanced Database Assignment Sheet'" 
                     />
                 </div>
@@ -61,7 +60,7 @@
 
                 <div class="form-group">
                     <label for="resourceCategory">Academic Category</label>
-                    <select id="resourceCategory" name="categoryId" required>
+                    <select id="resourceCategory" name="categoryId" >
                         <option value="" disabled selected>Select a Suitable Flair</option>
                         <c:forEach var="category" items="${categories}">
                             <option value="${category.id}">
@@ -85,14 +84,13 @@
 				        type="file" 
 				        id="resourceFile" 
 				        name="file" 
-				        required 
 				        style="display: none;" 
 				        onchange="handleFileSelection()"
 				    />
 				</div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Publish File Asset</button>
+                    <button type="submit" class="btn btn-primary">Publish Resource</button>
                     <a href="${pageContext.request.contextPath}/resources" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>

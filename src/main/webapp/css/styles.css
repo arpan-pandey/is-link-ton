@@ -555,3 +555,13 @@ a {
     opacity: 0;
     transform: translateX(-50%) scale(0.95);
 }
+
+
+.delete-item-btn{
+	all: unset;
+	cursor: pointer;
+	color: red;
+	font-weight: bold;
+	text-decoration: underline;
+	align-self: flex-end;
+}

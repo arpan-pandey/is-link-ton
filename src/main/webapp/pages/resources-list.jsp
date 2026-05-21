@@ -15,17 +15,17 @@
 	<jsp:include page="/components/user-header.jsp" />
 	
 	<%-- Success Message Notification --%>
-		<c:if test="${not empty sessionScope.message}">
+		<c:if test="${not empty message}">
 		    <div id="successBox" class="popup-message success-toast">
-		        <c:out value="${sessionScope.message}"/>
+		        <c:out value="${message}"/>
 		    </div>
 		    <c:remove var="message" scope="session" />
 		</c:if>
 		
 		<%-- Error Message Notification --%>
-		<c:if test="${not empty sessionScope.error}">
+		<c:if test="${not empty error}">
 		    <div id="errorBox" class="popup-message">
-		        <c:out value="${sessionScope.error}"/>
+		        <c:out value="${error}"/>
 		    </div>
 		    <c:remove var="error" scope="session" />
 		</c:if>
@@ -49,9 +49,11 @@
         <div class="resources-card-container">
 	        <c:forEach var="resource" items="${resources}">
 	            <div class="card resource-card">
+	            	<div class="icon-container center">
 	                <a class="resource-icon center" href="${pageContext.request.contextPath}/getfile?path=${resource.filePath}">
 	                    <c:out value="${resource.fileType}"/>
 	                </a>
+	                </div>
 	                <div class="resource-card-main">
 	                    <span class="resource-title"><c:out value="${resource.title}"/></span>
 	                    <div>
@@ -59,6 +61,15 @@
 	                        <span class="category-flair"><c:out value="${resource.categoryName}"/></span>
 	                    </div>
 	                </div>
+	                <c:if test="${sessionScope.user.role eq 'Faculty'}">
+						<!-- inline form (delete button only, but calls the DAO method) -->
+                        <form action="${pageContext.request.contextPath}/resources/delete" method="post" 
+                        	onsubmit="return confirm('Delete this resource?');" class="inline-form">
+                            
+                            <input type="hidden" name="id" value="${resource.id}">
+                            <button type="submit" class="delete-item-btn">Remove</button>
+                        </form>
+					</c:if>
 	            </div>
 	        </c:forEach>
 	    </div>

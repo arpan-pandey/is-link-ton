@@ -13,17 +13,17 @@
     <jsp:include page="/components/user-header.jsp" />
     
     <%-- Success Message Notification --%>
-		<c:if test="${not empty sessionScope.message}">
+		<c:if test="${not empty message}">
 		    <div id="successBox" class="popup-message success-toast">
-		        <c:out value="${sessionScope.message}"/>
+		        <c:out value="${message}"/>
 		    </div>
 		    <c:remove var="message" scope="session" />
 		</c:if>
 		
 		<%-- Error Message Notification --%>
-		<c:if test="${not empty sessionScope.error}">
+		<c:if test="${not empty error}">
 		    <div id="errorBox" class="popup-message">
-		        <c:out value="${sessionScope.error}"/>
+		        <c:out value="${error}"/>
 		    </div>
 		    <c:remove var="error" scope="session" />
 		</c:if>
@@ -43,7 +43,6 @@
                         type="text" 
                         id="petitionTitle" 
                         name="title" 
-                        required
                         placeholder="e.g., 'Betterment of Existing Attendance System Modules'" 
                     />
                 </div>
@@ -54,14 +53,13 @@
                         id="petitionContent" 
                         name="content"
                         type="text" 
-                        required
                         placeholder="Describe why the issue matters, and the changes expected..."
                     ></input>
                 </div>
 
                 <div class="form-group">
                     <label for="petitionCategory">Category Flair</label>
-                    <select id="petitionCategory" name="categoryId" required>
+                    <select id="petitionCategory" name="categoryId" >
                         <option value="" disabled selected>Select a Suitable Flair</option>
                         
                         <%-- binding id to value and printing names --%>

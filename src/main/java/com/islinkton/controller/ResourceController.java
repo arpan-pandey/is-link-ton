@@ -86,7 +86,7 @@ public class ResourceController extends HttpServlet {
             if (title == null || title.trim().isEmpty() || categoryIdStr == null || categoryIdStr.trim().isEmpty()) {
                 try {
                     request.setAttribute("error", "All fields are strictly required.");
-                    List<Category> resourceCategories = categoryDAO.getCategoriesByType("Resource");
+                    List<Category> resourceCategories = categoryDAO.getCategoriesByType("Course");
                     request.setAttribute("categories", resourceCategories);
                     request.getRequestDispatcher("/pages/upload-resource.jsp").forward(request, response);
                 } catch (Exception e) {
@@ -99,7 +99,7 @@ public class ResourceController extends HttpServlet {
                 Part filePart = request.getPart("file");
                 if (filePart == null || filePart.getSize() == 0) {
                     request.setAttribute("error", "Please select a valid file to upload.");
-                    List<Category> resourceCategories = categoryDAO.getCategoriesByType("Resource");
+                    List<Category> resourceCategories = categoryDAO.getCategoriesByType("Course");
                     request.setAttribute("categories", resourceCategories);
                     request.getRequestDispatcher("/pages/upload-resource.jsp").forward(request, response);
                     return;

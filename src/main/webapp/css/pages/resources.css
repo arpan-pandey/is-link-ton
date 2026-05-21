@@ -12,6 +12,7 @@
 .resource-card{
 	display: flex;
 	flex-direction: column !important;
+	align-items: flex-end;
 	
 	flex: 0 0 calc(33.333% - 1rem); 
     min-width: 280px;
@@ -22,6 +23,11 @@
 	aspect-ratio: 1;
 	padding: 15px;
 	font-size: 1.2rem !important;
+}
+
+.icon-container{
+	width: 100% !important;
+	display: flex;
 }
 
 .resource-card-main{
