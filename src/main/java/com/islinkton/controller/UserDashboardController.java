@@ -1,8 +1,10 @@
 package com.islinkton.controller;
 
+import java.io.IOException;
+
 import com.islinkton.dao.PetitionDAO;
-import com.islinkton.dao.ThreadDAO;
 import com.islinkton.dao.ResourceDAO;
+import com.islinkton.dao.ThreadDAO;
 import com.islinkton.dao.VoteDAO;
 import com.islinkton.model.User;
 
@@ -11,7 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/dashboard")
 public class UserDashboardController extends HttpServlet {
@@ -24,6 +26,10 @@ public class UserDashboardController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+        	
+        	HttpSession session = request.getSession();
+            User currentUser = (User) session.getAttribute("user");
+            
             // Load base list content elements
             request.setAttribute("recentThreads", threadDAO.getRecentThreads());
             request.setAttribute("recentPetitions", petitionDAO.getRecentPetitions());
@@ -36,7 +42,13 @@ public class UserDashboardController extends HttpServlet {
                 request.setAttribute("votedPetitionIds", voteDAO.getUserVotedPetitionIds(user.getId()));
             }
 
-            request.getRequestDispatcher("/pages/user-dashboard.jsp").forward(request, response);
+            if ("Admin".equalsIgnoreCase(currentUser.getRole())) {
+                // Internally hands off execution to your AdminController's doGet method
+                request.getRequestDispatcher("/admin/dashboard").forward(request, response);
+            } else {
+                // Forward to your standard user dashboard page
+                request.getRequestDispatcher("pages/user-dashboard.jsp").forward(request, response);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Dashboard failed to load framework assets.");

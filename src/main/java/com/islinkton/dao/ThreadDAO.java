@@ -62,6 +62,43 @@ public class ThreadDAO {
         return threads;
     }
     
+    public List<Thread> getPendingThreads() throws Exception {
+        List<Thread> threads = new ArrayList<>();
+        Connection con = DBconfig.getDbConnection();
+        
+        String sql = "SELECT t.id, t.title, t.content, t.created_at, " +
+                "c.name AS category_name, " +
+                "COALESCE(u.username, 'Deleted User') AS author_username, " +
+                "(SELECT COUNT(*) FROM thread_votes tv WHERE tv.thread_id = t.id) AS vote_count, " +
+                "(SELECT COUNT(*) FROM posts p WHERE p.thread_id = t.id) AS comment_count " +
+                "FROM threads t " +
+                "LEFT JOIN categories c ON t.category_id = c.id " +
+                "LEFT JOIN users u ON t.author_id = u.id " +
+                "WHERE t.is_approved = FALSE " +
+                "ORDER BY t.created_at DESC";
+        
+        PreparedStatement pst = con.prepareStatement(sql);
+        ResultSet rs = pst.executeQuery();
+
+        while (rs.next()) {
+            Thread t = new Thread();
+            t.setId(rs.getInt("id"));
+            t.setTitle(rs.getString("title"));
+            t.setContent(rs.getString("content"));
+            t.setCreatedAt(rs.getObject("created_at", LocalDateTime.class)); // reading the SQL timestamp value directly into a LocalDateTime object
+            t.setCategoryName(rs.getString("category_name"));
+            t.setAuthorUserName(rs.getString("author_username"));
+            t.setVoteCount(rs.getInt("vote_count"));
+            t.setCommentCount(rs.getInt("comment_count"));
+            threads.add(t);
+        }
+
+        rs.close();
+        pst.close();
+        con.close();
+        return threads;
+    }
+    
     public List<Thread> getRecentThreads() throws Exception {
         List<Thread> threads = new ArrayList<>();
         Connection con = DBconfig.getDbConnection();

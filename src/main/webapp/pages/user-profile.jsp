@@ -13,6 +13,22 @@
 <body>
 
     <jsp:include page="/components/user-header.jsp" />
+    
+    <%-- Success Message Notification --%>
+    <c:if test="${not empty sessionScope.message}">
+        <div id="successBox" class="popup-message success-toast">
+            <c:out value="${sessionScope.message}"/>
+        </div>
+        <c:remove var="message" scope="session" />
+    </c:if>
+		
+    <%-- Error Message Notification --%>
+    <c:if test="${not empty sessionScope.error}">
+        <div id="errorBox" class="popup-message">
+            <c:out value="${sessionScope.error}"/>
+        </div>
+        <c:remove var="error" scope="session" />
+    </c:if>
 
     <main>
         <div class="profile-header-centered">
@@ -20,21 +36,12 @@
             <p class="page-subtitle">Update your profile details and security settings.</p>
         </div>
 
-        <c:if test="${not empty sessionScope.message}">
-            <div class="alert-banner-success">${sessionScope.message}</div>
-            <% session.removeAttribute("message"); // Clear flash message after displaying %>
-        </c:if>
-        <c:if test="${not empty sessionScope.error}">
-            <div class="alert-banner-error">${sessionScope.error}</div>
-            <% session.removeAttribute("error"); // Clear flash error after displaying %>
-        </c:if>
-
         <div class="account-forms-container">
 
             <div class="profile-content-card">
                 <h3 class="card-header-title">Profile Information</h3>
 
-                <form action="${pageContext.request.contextPath}/profile" method="post" 
+                <form action="${pageContext.request.contextPath}/profile/" method="post" 
                       enctype="multipart/form-data">
                     <input type="hidden" name="action" value="updateProfile">
 
@@ -42,7 +49,6 @@
                         <div class="square-avatar-frame">
                             <c:choose>
 							    <c:when test="${not empty user.profileImage}">
-							        <%-- sending "images/" prefix ahead of the dynamic profile name --%>
 							        <img id="avatarImage" 
 							             src="${pageContext.request.contextPath}/getfile?path=images/${user.profileImage}"
 							             alt="Profile Picture"
@@ -83,7 +89,7 @@
             <div class="profile-content-card">
                 <h3 class="card-header-title">Change Password</h3>
 
-                <form action="${pageContext.request.contextPath}/profile" method="post">
+                <form action="${pageContext.request.contextPath}/profile/" method="post">
                     <input type="hidden" name="action" value="changePassword">
 
                     <div class="input-wrapper-block">
@@ -104,6 +110,24 @@
                     </div>
                 </form>
             </div>
+
+            <c:if test="${sessionScope.user.role eq 'Student'}">
+                <div class="profile-content-card" style="border-top: 4px solid #ef4444;">
+                    <h3 class="card-header-title" style="color: #ef4444;">Danger Zone</h3>
+                    <p style="font-size: 14px; color: #666; margin-bottom: 1.5rem;">
+                        Deactivating your account will disable your access instantly and mark your profile as inactive. 
+                        You will not be able to log back into this platform.
+                    </p>
+                    <form action="${pageContext.request.contextPath}/profile/deactivate" method="post" 
+                          onsubmit="return confirm('WARNING: Are you absolutely sure you want to deactivate your account? This action cannot be undone and you will be logged out immediately.');">
+                        <div class="form-actions-right">
+                            <button type="submit" class="btn-action-navy-submit" style="background-color: #ef4444; border-color: #ef4444;">
+                                Deactivate Account
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </c:if>
 
         </div>
     </main>

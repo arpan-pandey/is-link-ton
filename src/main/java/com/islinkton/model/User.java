@@ -11,6 +11,7 @@ public class User {
     private String password;
     private String role;       
     private String profileImage;
+    private int isActive;
     private boolean isApproved;
     private LocalDateTime createdAt;
 
@@ -48,7 +49,10 @@ public class User {
     public void setProfileImage(String profileImage) { this.profileImage = profileImage; }
 
     public boolean isApproved() { return isApproved; }
-    public void setApproved(boolean approved) { isApproved = approved; }
+    public void setApproved(boolean approved) { this.isApproved = approved; }
+    
+    public int isActive() { return isActive; }
+    public void setIsActive(int isActive) { this.isActive = isActive; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

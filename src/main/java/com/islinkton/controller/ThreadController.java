@@ -27,12 +27,10 @@ public class ThreadController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String pathInfo = request.getPathInfo();   // e.g., threads/create, threads/view, threads/
+        String pathInfo = request.getPathInfo();
 
         try {
             if (pathInfo == null || pathInfo.equals("/")) {
-                
-            	// list all threads in /threads
                 List<Thread> threads = threadService.getAllApprovedThreads();
                 request.setAttribute("threads", threads);
                 
@@ -43,20 +41,15 @@ public class ThreadController extends HttpServlet {
                 }
                 
                 request.getRequestDispatcher("/pages/threads-list.jsp").forward(request, response);
-                
 
             } else if (pathInfo.equals("/create")) {
+                CategoryDAO categoryDAO = new CategoryDAO();
+                List<Category> threadCategories = categoryDAO.getCategoriesByType("Thread");
+                request.setAttribute("categories", threadCategories);
                 
-            	// show create form in /threads/create
-            	CategoryDAO categoryDAO = new CategoryDAO();
-            	List<Category> threadCategories = categoryDAO.getCategoriesByType("Thread");
-            	request.setAttribute("categories", threadCategories);
-            	
                 request.getRequestDispatcher("/pages/create-thread.jsp").forward(request, response);
 
             } else if (pathInfo.equals("/view")) {
-                
-            	// view single thread single /threads/view?id=5
                 String idStr = request.getParameter("id");
                 if (idStr != null) {
                     int id = Integer.parseInt(idStr);
@@ -82,7 +75,7 @@ public class ThreadController extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Error: " + e.getMessage());
-            request.getRequestDispatcher("/pages/threads/list.jsp").forward(request, response);
+            request.getRequestDispatcher("/pages/threads-list.jsp").forward(request, response);
         }
     }
 
@@ -93,14 +86,10 @@ public class ThreadController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         String pathInfo = request.getPathInfo();
 
-        /*
-         * COMMENT CREATION
-         */
         if (pathInfo != null && pathInfo.equals("/comment/create")) {
             String threadIdStr = request.getParameter("threadId");
             String commentBody = request.getParameter("commentBody");
 
-            // Basic validation checking
             if (commentBody == null || commentBody.trim().isEmpty()) {
                 response.sendRedirect(request.getContextPath() + "/threads");
                 return;
@@ -113,36 +102,54 @@ public class ThreadController extends HttpServlet {
                 PostDAO postDAO = new PostDAO();
                 boolean success = postDAO.insertPost(post);
 
-                // Redirect right back to view the exact thread detail page freshly updated
                 response.sendRedirect(request.getContextPath() + "/threads/view?id=" + threadId);
             } catch (Exception e) {
                 e.printStackTrace();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error adding comment.");
             }
-            return; // break execution out safely
+            return;
         }
         
-        /*
-         * THREAD CREATION
-         */
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         String categoryIdStr = request.getParameter("categoryId");
 
-        // null validations
         if (title == null || title.trim().isEmpty()) {
+            try {
+                CategoryDAO categoryDAO = new CategoryDAO();
+                List<Category> threadCategories = categoryDAO.getCategoriesByType("Thread");
+                request.setAttribute("categories", threadCategories);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             request.setAttribute("error", "Thread title is required");
             request.getRequestDispatcher("/pages/create-thread.jsp").forward(request, response);
             return;
         }
+        
         if (content == null || content.trim().isEmpty()) {
+            try {
+                CategoryDAO categoryDAO = new CategoryDAO();
+                List<Category> threadCategories = categoryDAO.getCategoriesByType("Thread");
+                request.setAttribute("categories", threadCategories);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             request.setAttribute("error", "Content is required");
-            request.getRequestDispatcher("/pages/threads/create.jsp").forward(request, response);
+            request.getRequestDispatcher("/pages/create-thread.jsp").forward(request, response);
             return;
         }
+        
         if (categoryIdStr == null || categoryIdStr.trim().isEmpty()) {
+            try {
+                CategoryDAO categoryDAO = new CategoryDAO();
+                List<Category> threadCategories = categoryDAO.getCategoriesByType("Thread");
+                request.setAttribute("categories", threadCategories);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             request.setAttribute("error", "Please select a category");
-            request.getRequestDispatcher("/pages/threads/create.jsp").forward(request, response);
+            request.getRequestDispatcher("/pages/create-thread.jsp").forward(request, response);
             return;
         }
 
@@ -166,7 +173,7 @@ public class ThreadController extends HttpServlet {
             e.printStackTrace();
             request.setAttribute("error", "Error creating thread: " + e.getMessage());
         }
-
+        
         response.sendRedirect(request.getContextPath() + "/threads");
     }
 }

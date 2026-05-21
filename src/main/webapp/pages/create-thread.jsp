@@ -13,6 +13,20 @@
 <body>
     <jsp:include page="/components/user-header.jsp" />
     
+    <c:if test="${not empty message}">
+		    <div id="successBox" class="popup-message success-toast">
+		        <c:out value="${message}"/>
+		    </div>
+		    <c:remove var="message" scope="session" />
+		</c:if>
+		
+		<c:if test="${not empty error}">
+		    <div id="errorBox" class="popup-message">
+		        <c:out value="${error}"/>
+		    </div>
+		    <c:remove var="error" scope="session" />
+	</c:if>
+    
     <main class="form-main-container">
         <div class="form-card">
             <div class="form-header">
@@ -34,14 +48,13 @@
                         type="text" 
                         id="threadTitle" 
                         name="title" 
-                        required
                         placeholder="e.g., 'Questions regarding the upcoming Midterm format'" 
                     />
                 </div>
 
                 <div class="form-group">
                     <label for="threadCategory">Category Flair</label>
-                    <select id="threadCategory" name="categoryId" required>
+                    <select id="threadCategory" name="categoryId">
                         <option value="" disabled selected>Select a Suitable Flair</option>
                         <c:forEach var="category" items="${categories}">
                             <option value="${category.id}" ${param.categoryId == category.id ? 'selected' : ''}>
@@ -58,7 +71,6 @@
                         name="content" 
                         rows="8" 
                         placeholder="Provide details, background context, or instructions here..." 
-                        required
                     ><c:out value="${param.content}" /></textarea>
                 </div>
 

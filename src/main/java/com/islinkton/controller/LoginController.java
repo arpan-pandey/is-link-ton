@@ -16,64 +16,72 @@ import java.time.format.DateTimeFormatter;
 
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
-	
-	private UserDAO userDAO = new UserDAO();
+    
+    private UserDAO userDAO = new UserDAO();
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-	        throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-	    String email = request.getParameter("email");
-	    String password = request.getParameter("password");
-	    
-	    if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        
+        if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
             request.setAttribute("error", "Login Credentials cannot contain white spaces or empty definitions.");
             request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
             return;
         }
 
-	    LoginService service = new LoginService();
-	    String status = service.login(email, password);
+        LoginService service = new LoginService();
+        String status = service.login(email, password);
 
-	    if ("Success".equals(status)) {
-	        try {
-	            UserDAO userDAO = new UserDAO();
-	            User userData = userDAO.getUserByEmail(email);
+        if ("Success".equals(status)) {
+            try {
+                UserDAO userDAO = new UserDAO();
+                User userData = userDAO.getUserByEmail(email);
 
-	            if (userData == null) {
-	                request.setAttribute("error", "User not found");
-	                request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
-	                return;
-	            }
+                if (userData == null) {
+                    request.setAttribute("error", "User not found");
+                    request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
+                    return;
+                }
 
-	            // set Session
-	            SessionUtil.setAttribute(request, "user", userData, 3600);
+                // Guard Clause: Prevent deactivated/inactive accounts from logging in
+                // Note: Change to !userData.isActive() if your User model maps this property as a boolean field
+                if (userData.isActive() == 0) {
+                    request.setAttribute("error", "This account has been deactivated. Please contact administration.");
+                    request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
+                    return;
+                }
 
-	            // set Last Login Cookie
-	            String loginTime = LocalDateTime.now()
-	                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss"));
-	            CookieUtil.addCookie(response, "last_login", loginTime, 3600);
+                // set Session
+                SessionUtil.setAttribute(request, "user", userData, 3600);
 
-	            // redirect based on role
-	            if ("Admin".equals(userData.getRole())) {
-	            	response.sendRedirect(request.getContextPath() + "/admin/dashboard");
-	            } else {
-	            	response.sendRedirect(request.getContextPath() + "/dashboard");
-	            }
+                // set Last Login Cookie
+                String loginTime = LocalDateTime.now()
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss"));
+                CookieUtil.addCookie(response, "last_login", loginTime, 3600);
 
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            request.setAttribute("error", "System error occurred");
-	            request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
-	        }
-	    } 
-	    else {
-	        // Handle all failure cases
-	        request.setAttribute("error", status);   // e.g., "Password is incorrect"
-	        request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
-	    }
-	}
+                // redirect based on role
+                if ("Admin".equals(userData.getRole())) {
+                    response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/dashboard");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("error", "System error occurred");
+                request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
+            }
+        } 
+        else {
+            // Handle all failure cases
+            request.setAttribute("error", status);   // e.g., "Password is incorrect"
+            request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
+        }
+    }
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
+        request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
     }
 }

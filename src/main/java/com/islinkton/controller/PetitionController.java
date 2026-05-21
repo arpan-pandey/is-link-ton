@@ -31,7 +31,6 @@ public class PetitionController extends HttpServlet {
 
         try {
             if (pathInfo == null || pathInfo.equals("/")) {
-                // list all approved petitions
                 List<Petition> petitions = petitionDAO.getAllApprovedPetitions();
                 request.setAttribute("petitions", petitions);
                 
@@ -44,7 +43,6 @@ public class PetitionController extends HttpServlet {
                 request.getRequestDispatcher("/pages/petitions-list.jsp").forward(request, response);
 
             } else if (pathInfo.equals("/create")) {
-                // show creation form
                 List<Category> petitionCategories = categoryDAO.getCategoriesByType("Petition");
                 request.setAttribute("categories", petitionCategories);
                 request.getRequestDispatcher("/pages/create-petition.jsp").forward(request, response);
@@ -67,19 +65,16 @@ public class PetitionController extends HttpServlet {
         User user = (User) session.getAttribute("user");
         String pathInfo = request.getPathInfo();
 
-        // Global Security Guard
         if (user == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
-        // creation
         if (pathInfo != null && pathInfo.equals("/create")) {
             String title = request.getParameter("title");
             String content = request.getParameter("content");
             String categoryIdStr = request.getParameter("categoryId");
 
-            // server-side validation
             if (title == null || title.trim().isEmpty() || 
                 content == null || content.trim().isEmpty() || 
                 categoryIdStr == null || categoryIdStr.trim().isEmpty()) {
@@ -98,7 +93,6 @@ public class PetitionController extends HttpServlet {
             try {
                 int categoryId = Integer.parseInt(categoryIdStr.trim());
 
-                // Uses your target Model constructor signature perfectly
                 Petition petition = new Petition(
                     title.trim(),
                     content.trim(),
@@ -119,14 +113,20 @@ public class PetitionController extends HttpServlet {
                 session.setAttribute("error", "System error: " + e.getMessage());
             }
 
-            // Post-Redirect-Get pattern safely points back to lists framework mapping
             response.sendRedirect(request.getContextPath() + "/petitions");
             return;
         }
 
-        // delete
         if (pathInfo != null && pathInfo.equals("/delete")) {
-            String petitionIdStr = request.getParameter("petitionId");
+            // Role Guard Clause
+            if (!"Admin".equalsIgnoreCase(user.getRole())) {
+                session.setAttribute("error", "Unauthorized action. Access denied.");
+                response.sendRedirect(request.getContextPath() + "/petitions");
+                return;
+            }
+
+            // Fixed: Changed from "petitionId" to "id" to match the JSP form input name
+            String petitionIdStr = request.getParameter("id");
 
             if (petitionIdStr != null && !petitionIdStr.trim().isEmpty()) {
                 try {
@@ -142,6 +142,8 @@ public class PetitionController extends HttpServlet {
                     e.printStackTrace();
                     session.setAttribute("error", "System failed to process deletion parameter processing.");
                 }
+            } else {
+                session.setAttribute("error", "Missing required petition identification parameter.");
             }
             response.sendRedirect(request.getContextPath() + "/petitions");
             return;

@@ -14,9 +14,24 @@
 <body>
 	<jsp:include page="/components/user-header.jsp" />
 	
+	<%-- Success Message Notification --%>
+		<c:if test="${not empty message}">
+		    <div id="successBox" class="popup-message success-toast">
+		        <c:out value="${message}"/>
+		    </div>
+		    <c:remove var="message" scope="session" />
+		</c:if>
+		
+		<%-- Error Message Notification --%>
+		<c:if test="${not empty error}">
+		    <div id="errorBox" class="popup-message">
+		        <c:out value="${error}"/>
+		    </div>
+		    <c:remove var="error" scope="session" />
+		</c:if>
+	
 	<main class="thread-container">
 		
-		<!-- basic breadcrumb navigator at the top of the main section (&gt; is ' > ')-->
 		<nav class="breadcrumb-nav">
 			<a href="${pageContext.request.contextPath}/threads">Threads</a> &gt; 
 			<span>
@@ -39,16 +54,26 @@
 				<span class="view-body"><c:out value="${thread.content}" /></span>
 			</div>
 			<div class="thread-interaction-container">
-				<div>
-					<c:set var="hasVotedThread" value="${not empty votedThreadIds && fn:contains(votedThreadIds, thread.id)}" />
-
-					<form action="${pageContext.request.contextPath}/vote/thread" method="POST" style="margin: 0; display: inline;">
-					    <input type="hidden" name="id" value="${thread.id}" />
-					    <button type="submit" class="thread-vote-button ${hasVotedThread ? 'active-voted' : ''}">⮝</button>
-					</form>
-					<span class="vote-count"><c:out value="${thread.voteCount}" /> votes</span>
-					<span class="interaction-divider">｜</span>
-					<span>Comments: <c:out value="${thread.commentCount}" /></span>
+				<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+					<div>
+						<c:set var="hasVotedThread" value="${not empty votedThreadIds && fn:contains(votedThreadIds, thread.id)}" />
+	
+						<form action="${pageContext.request.contextPath}/vote/thread" method="POST" style="margin: 0; display: inline;">
+						    <input type="hidden" name="id" value="${thread.id}" />
+						    <button type="submit" class="thread-vote-button ${hasVotedThread ? 'active-voted' : ''}">⮝</button>
+						</form>
+						<span class="vote-count"><c:out value="${thread.voteCount}" /> votes</span>
+						<span class="interaction-divider">｜</span>
+						<span>Comments: <c:out value="${thread.commentCount}" /></span>
+					</div>
+					
+					<c:if test="${sessionScope.user.role eq 'Admin'}">
+						<form action="${pageContext.request.contextPath}/petitions/delete" method="post" 
+							onsubmit="return confirm('Delete this thread and all its comments?');" style="margin: 0;">
+							<input type="hidden" name="id" value="${thread.id}">
+							<button type="submit" class="delete-comment-btn">Delete Thread</button>
+						</form>
+					</c:if>
 				</div>
 			</div>
 		</div>
@@ -63,7 +88,6 @@
 					</button>	
 				</div>	
                       
-				<!-- Add comment form -->
 		    	<div id="create-comment" class="reply-drawer-form" style="display: none;">
                    <form action="${pageContext.request.contextPath}/posts" method="post" class="reply-form">
 						<input type="hidden" name="action" value="create">
@@ -84,11 +108,9 @@
 			    <c:choose>
 			        <c:when test="${not empty posts}">
 			        
-			        	<!-- COMMENTS -->
 			            <c:forEach var="post" items="${posts}" varStatus="status">
 							<div class="comment">
 								<div>
-									<!-- profile image  --> 
 									<img src="${pageContext.request.contextPath}/getfile?path=images/${post.profileImage}"
 				                     alt="Profile"
 				                     class="avatar comment-avatar"
@@ -97,17 +119,14 @@
 				                     <div class="comment-main">
 				                     	<div class="comment-main-header">
 				                     		<c:choose>
-											    <%-- THREAD CREATOR (OP) --%>
 											    <c:when test="${post.userId == thread.authorId}">
 											        <span class="category-flair op comment-flair">OP</span>
 											    </c:when>
 											
-											    <%-- ADMIN OR TEACHER --%>
 											    <c:when test="${post.userRole == 'Admin' || post.userRole == 'Faculty'}">
 											        <span class="category-flair verified comment-flair"><c:out value="${post.userRole}" /></span>
 											    </c:when>
 											    
-											    <%-- THREAD CREATOR (OP) --%>
 											    <c:otherwise>
 											        <span class="category-flair normal comment-flair">Student</span>
 											    </c:otherwise>
@@ -116,10 +135,8 @@
 				                     		<strong>u/<c:out value="${post.authorUserName}" /></strong>
 											<span>(<c:out value="${post.timeAgo}" />)</span>
 											
-											<!-- checking if user logged in currently created the comment and displaying option to delete it -->
-											<c:if test="${sessionScope.user.id == post.userId}">
+											<c:if test="${sessionScope.user.id == post.userId or sessionScope.user.role eq 'Admin'}">
 											
-												<!-- inline form (delete button only, but calls the DAO method) -->
 					                            <form action="${pageContext.request.contextPath}/posts" method="post" 
 					                            	onsubmit="return confirm('Delete this comment and all its nested replies?');" class="inline-form">
 					                                
@@ -156,13 +173,10 @@
 			                    </section>
 							</div>
 							
-							
-							<!-- REPLIES -->
 							<c:if test="${not empty post.replies}">
 		                     	<c:forEach var="reply" items="${post.replies}">
 		                     		<div class="comment" style="border-left: 2px solid #c4c6cd; margin-left: 54px; padding-left: 1.5rem; padding-top: 10px;">
 			                     		<div>
-											<!-- profile image  --> 
 											<img src="${pageContext.request.contextPath}/getfile?path=images/${reply.profileImage}"
 						                     alt="Profile"
 						                     class="avatar comment-avatar"
@@ -172,17 +186,14 @@
 						                     		
 						                     	<div class="comment-main-header">
 						                     		<c:choose>
-													    <%-- THREAD CREATOR (OP) --%>
 													    <c:when test="${reply.userId == thread.authorId}">
 													        <span class="category-flair op comment-flair">OP</span>
 													    </c:when>
 													
-													    <%-- ADMIN OR TEACHER --%>
 													    <c:when test="${reply.userRole == 'Admin' || reply.userRole == 'Faculty'}">
 													        <span class="category-flair verified comment-flair"><c:out value="${reply.userRole}" /></span>
 													    </c:when>
 													    
-													    <%-- THREAD CREATOR (OP) --%>
 													    <c:otherwise>
 													        <span class="category-flair normal comment-flair">Student</span>
 													    </c:otherwise>
@@ -191,10 +202,8 @@
 						                     		<strong>u/<c:out value="${reply.authorUserName}" /></strong>
 													<span>(<c:out value="${reply.timeAgo}" />)</span>
 													
-													<!-- checking if user logged in currently created the comment and displaying option to delete it -->
-													<c:if test="${sessionScope.user.id == reply.userId}">
+													<c:if test="${sessionScope.user.id == reply.userId or sessionScope.user.role eq 'Admin'}">
 													
-														<!-- inline form (delete button only, but calls the DAO method) -->
 							                            <form action="${pageContext.request.contextPath}/posts" method="post" 
 							                            	onsubmit="return confirm('Delete this reply?');" class="inline-form">
 							                                

@@ -1,4 +1,4 @@
- package com.islinkton.controller;
+package com.islinkton.controller;
 
 import com.islinkton.dao.UserDAO;
 import com.islinkton.model.User;
@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.IOException;
 
-@WebServlet("/profile")
+@WebServlet("/profile/*")
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 2,
     maxFileSize = 50L * 1024 * 1024,      // 50 MB
@@ -37,6 +37,14 @@ public class ProfileController extends HttpServlet {
             return;
         }
 
+        String pathInfo = request.getPathInfo();
+        
+        // Handle fallback redirect for anything other than basic root GET profile view
+        if (pathInfo != null && !pathInfo.equals("/")) {
+            response.sendRedirect(request.getContextPath() + "/profile/");
+            return;
+        }
+
         request.setAttribute("user", user);
         request.getRequestDispatcher("/pages/user-profile.jsp").forward(request, response);
     }
@@ -53,9 +61,17 @@ public class ProfileController extends HttpServlet {
             return;
         }
 
-        String action = request.getParameter("action");
+        String pathInfo = request.getPathInfo();
 
         try {
+            // Check for modern subpath explicitly first
+            if (pathInfo != null && pathInfo.equals("/deactivate")) {
+                handleDeactivateAccount(request, response, user);
+                return; // Return directly; method manages its own out-bound redirections
+            }
+
+            // Fallback strategy pattern checks parameters for form variants
+            String action = request.getParameter("action");
             if ("changePassword".equals(action)) {
                 handleChangePassword(request, user);
             } else {
@@ -66,7 +82,7 @@ public class ProfileController extends HttpServlet {
             session.setAttribute("error", "An error occurred: " + e.getMessage());
         }
 
-        response.sendRedirect(request.getContextPath() + "/profile");
+        response.sendRedirect(request.getContextPath() + "/profile/");
     }
 
     private void handleUpdateProfile(HttpServletRequest request, User user) throws Exception {
@@ -79,19 +95,14 @@ public class ProfileController extends HttpServlet {
             return;
         }
 
-        boolean profilesChanged = false;
-
-        // 1. Check and update text profile fields if they differ
         if (!fullName.trim().equals(user.getFullName()) || !email.trim().equals(user.getEmail())) {
             int rows = userDAO.updateUserProfile(user.getId(), fullName.trim(), email);
             if (rows > 0) {
                 user.setFullName(fullName.trim());
                 user.setEmail(email);
-                profilesChanged = true;
             }
         }
 
-        // 2. Handle Profile Image Upload independently
         Part filePart = request.getPart("profileImage");
         if (filePart != null && filePart.getSize() > 0) {
             if (FileUploadUtil.isImage(filePart)) {
@@ -101,7 +112,6 @@ public class ProfileController extends HttpServlet {
                     user.setProfileImage(newFileName);
                     userDAO.updateProfileImage(user.getId(), newFileName);
                     System.out.println("[ProfileController] Database updated with file: " + newFileName);
-                    profilesChanged = true;
                 }
             } else {
                 session.setAttribute("error", "Only image files (JPG, PNG, etc.) are allowed.");
@@ -109,7 +119,6 @@ public class ProfileController extends HttpServlet {
             }
         }
 
-        // 3. Save state variables back into the Session context cleanly
         SessionUtil.setAttribute(request, "user", user, 3600);
         session.setAttribute("message", "Profile updated successfully!");
     }
@@ -138,6 +147,34 @@ public class ProfileController extends HttpServlet {
             }
         } else {
             session.setAttribute("error", "Current password is incorrect.");
+        }
+    }
+
+    private void handleDeactivateAccount(HttpServletRequest request, HttpServletResponse response, User user) throws Exception {
+        HttpSession session = request.getSession();
+
+        // Security role guard check
+        if (!"Student".equalsIgnoreCase(user.getRole())) {
+            session.setAttribute("error", "Unauthorized action. Only students can self-deactivate.");
+            response.sendRedirect(request.getContextPath() + "/profile/");
+            return;
+        }
+
+        // Execute the database update payload statement status flag change 
+        int result = userDAO.deactivateUser(user.getId());
+
+        if (result > 0) {
+            // Nuke active session footprint completely
+            session.invalidate();
+            
+            // Build a fresh new session container to pass flash toast over redirect
+            HttpSession outboundSession = request.getSession(true);
+            outboundSession.setAttribute("message", "Your account has been successfully deactivated.");
+            
+            response.sendRedirect(request.getContextPath() + "/login");
+        } else {
+            session.setAttribute("error", "Failed to process account deactivation in backend databases.");
+            response.sendRedirect(request.getContextPath() + "/profile/");
         }
     }
 }

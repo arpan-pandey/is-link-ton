@@ -19,7 +19,7 @@ public class UserDAO {
         pst.setString(2, username);
         pst.setString(3, email);
         pst.setString(4, password);
-        pst.setString(5, "Student"); // default value
+        pst.setString(5, "Student"); 
         pst.setString(6, fileName);
         pst.setBoolean(7, false);
         int rows = pst.executeUpdate();
@@ -45,6 +45,7 @@ public class UserDAO {
             user.setRole(rs.getString("role"));
             user.setProfileImage(rs.getString("profile_image"));
             user.setApproved(rs.getBoolean("is_approved"));
+            user.setIsActive(rs.getInt("is_active"));
         }
         rs.close();
         pst.close();
@@ -54,7 +55,6 @@ public class UserDAO {
 
     public List<User> getPendingUsers() throws Exception {
         List<User> users = new ArrayList<>();
-       
         Connection con = DBconfig.getDbConnection();
         String sql = "SELECT * FROM users WHERE is_approved = FALSE ORDER BY created_at DESC";
         PreparedStatement pst = con.prepareStatement(sql);
@@ -78,7 +78,6 @@ public class UserDAO {
    
     public List<User> getAllApprovedUsers() throws Exception {
         List<User> users = new ArrayList<>();
-       
         Connection con = DBconfig.getDbConnection();
         String sql = "SELECT * FROM users WHERE is_approved = TRUE ORDER BY created_at DESC";
         PreparedStatement pst = con.prepareStatement(sql);
@@ -104,7 +103,6 @@ public class UserDAO {
         Connection con = DBconfig.getDbConnection();
         String sql = "UPDATE users SET is_approved = TRUE WHERE id = ?";
         PreparedStatement pst = con.prepareStatement(sql);
-       
         pst.setInt(1, userId);
         int rows = pst.executeUpdate();
         pst.close();
@@ -116,41 +114,41 @@ public class UserDAO {
         Connection con = DBconfig.getDbConnection();
         String sql = "DELETE FROM users WHERE id = ?";
         PreparedStatement pst = con.prepareStatement(sql);
-       
         pst.setInt(1, userId);
         int rows = pst.executeUpdate();
         pst.close();
         con.close();
         return rows > 0;
     }
+    
+    public int deactivateUser(int userId) throws Exception {
+        Connection con = DBconfig.getDbConnection();
+        String sql = "UPDATE users SET is_active = 0 WHERE id = ?";
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setInt(1, userId);
+        int rows = pst.executeUpdate();
+        pst.close();
+        con.close();
+        return rows;
+    }
 
-    /**
-     * Update user's full name and email
-     */
     public int updateUserProfile(int userId, String fullName, String email) throws Exception {
         Connection con = null;
         PreparedStatement pst = null;
-        
         try {
             con = DBconfig.getDbConnection();
             String sql = "UPDATE users SET full_name = ?, email = ? WHERE id = ?";
-            
             pst = con.prepareStatement(sql);
             pst.setString(1, fullName);
             pst.setString(2, email);
             pst.setInt(3, userId);
-            
             return pst.executeUpdate();
-            
         } finally {
             if (pst != null) pst.close();
             if (con != null) con.close();
         }
     }
 
-    /**
-     * Update only profile image filename in database
-     */
     public int updateProfileImage(int userId, String filePath) throws Exception {
         Connection con = null;
         PreparedStatement pst = null;
@@ -158,7 +156,7 @@ public class UserDAO {
             con = DBconfig.getDbConnection();
             String sql = "UPDATE users SET profile_image = ? WHERE id = ?";
             pst = con.prepareStatement(sql);
-            pst.setString(1, filePath);        // Now storing path
+            pst.setString(1, filePath);        
             pst.setInt(2, userId);
             return pst.executeUpdate();
         } finally {
@@ -166,6 +164,7 @@ public class UserDAO {
             if (con != null) con.close();
         }
     }
+
     public int updatePassword(int userId, String hashedPassword) throws Exception {
         Connection con = null;
         PreparedStatement pst = null;

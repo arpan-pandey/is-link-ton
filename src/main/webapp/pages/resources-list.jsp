@@ -61,7 +61,7 @@
 	                        <span class="category-flair"><c:out value="${resource.categoryName}"/></span>
 	                    </div>
 	                </div>
-	                <c:if test="${sessionScope.user.role eq 'Faculty'}">
+	                <c:if test="${sessionScope.user.role eq 'Faculty' or sessionScope.user.role eq 'Admin'}">
 						<!-- inline form (delete button only, but calls the DAO method) -->
                         <form action="${pageContext.request.contextPath}/resources/delete" method="post" 
                         	onsubmit="return confirm('Delete this resource?');" class="inline-form">

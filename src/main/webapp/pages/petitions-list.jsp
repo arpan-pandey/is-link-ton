@@ -14,7 +14,6 @@
 <body>
 	<jsp:include page="/components/user-header.jsp" />
 	
-	<%-- Success Message Notification --%>
 		<c:if test="${not empty sessionScope.message}">
 		    <div id="successBox" class="popup-message success-toast">
 		        <c:out value="${sessionScope.message}"/>
@@ -22,7 +21,6 @@
 		    <c:remove var="message" scope="session" />
 		</c:if>
 		
-		<%-- Error Message Notification --%>
 		<c:if test="${not empty sessionScope.error}">
 		    <div id="errorBox" class="popup-message">
 		        <c:out value="${sessionScope.error}"/>
@@ -40,7 +38,9 @@
 				</span>
 			</div>
 			<div>
-				<a class="creation-button" href="${pageContext.request.contextPath}/petitions/create">Create Petition</a>
+				<c:if test="${sessionScope.user.role eq 'Student'}">	                        
+					<a class="creation-button" href="${pageContext.request.contextPath}/petitions/create">Create Petition</a>
+                </c:if>
 			</div>
 		</div>
 		
@@ -65,15 +65,28 @@
 		            <div class="petition-interaction">
 		                <span class="petition-creator-info">By: @<c:out value="${petition.creatorUserName}" /></span>
 		                
-		                <form action="${pageContext.request.contextPath}/vote/petition" method="POST" style="margin: 0;">
-		                    <input type="hidden" name="id" value="${petition.id}" />
-		                    <button type="submit" class="petition-vote-button ${hasVotedPetition ? 'voted-state' : ''}">
-		                        <c:choose>
-		                            <c:when test="${hasVotedPetition}">Voted</c:when>
-		                            <c:otherwise>Vote</c:otherwise>
-		                        </c:choose>
-		                    </button>
-		                </form>
+		                <c:choose>
+		                    <c:when test="${sessionScope.user.role eq 'Admin'}">
+		                        <form action="${pageContext.request.contextPath}/petitions/delete" method="post" 
+		                        	onsubmit="return confirm('Delete this petition?');" class="inline-form">
+		                            <input type="hidden" name="targetType" value="petition">
+		                            <input type="hidden" name="action" value="reject">
+		                            <input type="hidden" name="id" value="${petition.id}">
+		                            <button type="submit" class="delete-item-btn">Remove</button>
+		                        </form>
+		                    </c:when>
+		                    <c:otherwise>
+		                        <form action="${pageContext.request.contextPath}/vote/petition" method="POST" style="margin: 0;">
+		                            <input type="hidden" name="id" value="${petition.id}" />
+		                            <button type="submit" class="petition-vote-button ${hasVotedPetition ? 'voted-state' : ''}">
+		                                <c:choose>
+		                                    <c:when test="${hasVotedPetition}">Voted</c:when>
+		                                    <c:otherwise>Vote</c:otherwise>
+		                                </c:choose>
+		                            </button>
+		                        </form>
+		                    </c:otherwise>
+		                </c:choose>
 		            </div>
 		        </div>
 		    </c:forEach>
