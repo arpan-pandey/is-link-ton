@@ -68,8 +68,10 @@
 					</div>
 					
 					<c:if test="${sessionScope.user.role eq 'Admin'}">
-						<form action="${pageContext.request.contextPath}/petitions/delete" method="post" 
+						<form action="${pageContext.request.contextPath}/admin/dashboard" method="post" 
 							onsubmit="return confirm('Delete this thread and all its comments?');" style="margin: 0;">
+							<input type="hidden" name="targetType" value="thread">
+							<input type="hidden" name="action" value="delete">
 							<input type="hidden" name="id" value="${thread.id}">
 							<button type="submit" class="delete-comment-btn">Delete Thread</button>
 						</form>

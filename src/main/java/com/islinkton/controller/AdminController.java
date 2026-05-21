@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/admin/dashboard")
@@ -28,8 +29,7 @@ public class AdminController extends HttpServlet {
 
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("user");
-
-        // 🚀 STRICT SERVER-SIDE BACKEND SECURITY GUARD
+        
         if (currentUser == null || !"Admin".equalsIgnoreCase(currentUser.getRole())) {
             session.setAttribute("error", "Access Denied: You do not possess Administrative Privileges.");
             response.sendRedirect(request.getContextPath() + "/home");
@@ -37,20 +37,22 @@ public class AdminController extends HttpServlet {
         }
 
         try {
-            // 1. Fetch User Data Streams
             List<User> pendingUsers = userDAO.getPendingUsers();
             List<User> approvedUsers = userDAO.getAllApprovedUsers();
             
-            // 2. Fetch Petition Data Streams (Pending verification only)
-            List<Petition> pendingPetitions = petitionDAO.getPendingPetitions();
-            
-            // 3. Fetch System Forum Discussion Threads
+            List<User> allUsers = new ArrayList<>();
+            if (pendingUsers != null) {
+                allUsers.addAll(pendingUsers);
+            }
+            if (approvedUsers != null) {
+                allUsers.addAll(approvedUsers);
+            }
+
+            List<Petition> allPetitions = petitionDAO.getAllPetitions();
             List<Thread> allThreads = threadDAO.getPendingThreads();
             
-            // Bind all collections to request context for dashboard table rendering
-            request.setAttribute("pendingUsers", pendingUsers);
-            request.setAttribute("allUsers", approvedUsers);
-            request.setAttribute("pendingPetitions", pendingPetitions);
+            request.setAttribute("allUsers", allUsers);
+            request.setAttribute("allPetitions", allPetitions);
             request.setAttribute("allThreads", allThreads);
 
             request.getRequestDispatcher("/pages/admin/admin-dashboard.jsp").forward(request, response);
@@ -69,15 +71,14 @@ public class AdminController extends HttpServlet {
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("user");
 
-        // 🚀 CRITICAL POST INTERCEPTOR SECURITY GUARD
         if (currentUser == null || !"Admin".equalsIgnoreCase(currentUser.getRole())) {
             session.setAttribute("error", "Unauthorized state alteration execution attempt.");
             response.sendRedirect(request.getContextPath() + "/home");
             return;
         }
 
-        String targetType = request.getParameter("targetType"); // e.g., "user", "petition", "thread"
-        String action = request.getParameter("action");         // e.g., "approve", "reject", "delete"
+        String targetType = request.getParameter("targetType");
+        String action = request.getParameter("action");
         String idStr = request.getParameter("id");
 
         if (idStr == null || action == null || targetType == null) {
@@ -89,7 +90,6 @@ public class AdminController extends HttpServlet {
         int targetId = Integer.parseInt(idStr);
 
         try {
-            // Processing Router Matrix based on form target types
             switch (targetType.toLowerCase()) {
                 case "user":
                     if ("approve".equals(action)) {
@@ -103,7 +103,7 @@ public class AdminController extends HttpServlet {
 
                 case "petition":
                     if ("approve".equals(action)) {
-                        petitionDAO.approvePetition(targetId); // Update your PetitionDAO to include this method
+                        petitionDAO.approvePetition(targetId);
                         session.setAttribute("message", "Student petition approved and published successfully.");
                     } else if ("reject".equals(action) || "delete".equals(action)) {
                         petitionDAO.deletePetition(targetId, currentUser.getRole());

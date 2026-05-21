@@ -58,6 +58,38 @@ public class PetitionDAO {
         return petitions;
     }
     
+    public List<Petition> getAllPetitions() throws Exception {
+        List<Petition> petitions = new ArrayList<>();
+        Connection con = DBconfig.getDbConnection();
+        
+        String sql = "SELECT p.*, u.username as creator_username, c.name as category_name, "
+            + "(SELECT COUNT(*) FROM petition_votes pv WHERE pv.petition_id = p.id) AS vote_count "
+            + "FROM petitions p "
+            + "JOIN users u ON p.created_by = u.id "
+            + "JOIN categories c ON p.category_id = c.id "
+            + "ORDER BY p.created_at DESC";
+        
+        PreparedStatement pst = con.prepareStatement(sql);
+        ResultSet rs = pst.executeQuery();
+
+        while (rs.next()) {
+            Petition p = new Petition();
+            p.setId(rs.getInt("id"));
+            p.setTitle(rs.getString("title"));
+            p.setContent(rs.getString("content"));
+            p.setCreatorUserName(rs.getString("creator_username"));
+            p.setCategoryName(rs.getString("category_name"));
+            p.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
+            p.setVoteCount(rs.getInt("vote_count"));
+            petitions.add(p);
+        }
+
+        rs.close();
+        pst.close();
+        con.close();
+        return petitions;
+    }
+    
     public List<Petition> getPendingPetitions() throws Exception {
         List<Petition> petitions = new ArrayList<>();
         Connection con = DBconfig.getDbConnection();
