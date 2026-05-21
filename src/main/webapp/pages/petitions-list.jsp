@@ -40,9 +40,7 @@
 		                </div>
 		                <div class="petition-content">
 		                    <span class="petition-title">
-		                        <a href="${pageContext.request.contextPath}/petitions/view?id=${petition.id}">
 		                            <c:out value="${petition.title}" />
-		                        </a>
 		                    </span>
 		                    <span class="petition-body"><c:out value="${petition.content}" /></span>
 		                    <span class="petition-votes">Votes: <c:out value="${petition.voteCount}" /></span>    
